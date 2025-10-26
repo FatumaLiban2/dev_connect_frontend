@@ -1,0 +1,36 @@
+.sidebar-button-container {
+	width: 200px;
+}
+
+.sidebar-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 12px;
+	width: 100%;
+	height: 50px;
+	padding: 0 16px;
+	border-radius: 12px;
+	background-color: transparent;
+	color: inherit;
+	text-decoration: none;
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sidebar-button:hover,
+.sidebar-button:focus-visible {
+	background-color: rgba(99, 102, 241, 0.12);
+	color: #1f2937;
+}
+
+.sidebar-button img {
+	width: 24px;
+	height: 24px;
+	object-fit: contain;
+}
+
+.sidebar-button p {
+	margin: 0;
+	font-size: 0.95rem;
+	font-weight: 500;
+}

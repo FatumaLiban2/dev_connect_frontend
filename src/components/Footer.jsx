@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import '../styles/Footer.css';
-import logo from '../assets/devconnectlogo.png';
+import Logo from './Logo';
 
 const Footer = () => {
   return (
@@ -8,11 +8,7 @@ const Footer = () => {
       <div className="footer-container">
         {/* Left Section - Logo and Links */}
         <div className="footer-left">
-          <div className="footer-logo">
-            <img src={logo} alt="DevConnect Logo" className="footer-logo-icon" />
-            <span className="footer-logo-text">DevConnect</span>
-          </div>
-
+          <Logo textColor="#ffffff" />
           <nav className="footer-nav">
             <Link to="/about" className="footer-link">About us</Link>
             <Link to="/services" className="footer-link">Services</Link>

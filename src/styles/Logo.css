@@ -1,0 +1,44 @@
+.logo-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #1f2937;
+    font-family: "Inter", "Segoe UI", sans-serif;
+    text-decoration: none;
+}
+
+.logo-container .icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: #fff;
+    font-weight: 600;
+    line-height: 1;
+    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.25);
+}
+
+.logo-container .icon p {
+    margin: 0;
+}
+
+.logo-container .icon p:nth-child(1),
+.logo-container .icon p:nth-child(3) {
+    font-size: 20px;
+}
+
+.logo-container .icon p:nth-child(2) {
+    font-size: 18px;
+    position: relative;
+    top: 1px;
+}
+
+.logo-container span {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}

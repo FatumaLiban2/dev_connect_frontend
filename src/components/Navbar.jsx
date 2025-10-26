@@ -1,15 +1,14 @@
 import { Link } from 'react-router-dom';
 import '../styles/Navbar.css';
-import logo from '../assets/devconnectlogo.png';
+import Logo from './Logo';
 
 const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
         {/* Logo Section */}
-        <Link to="/" className="navbar-logo">
-          <img src={logo} alt="DevConnect Logo" className="logo-icon" />
-          <span className="logo-text">DevConnect</span>
+        <Link to="/">
+          <Logo />
         </Link>
 
         {/* Navigation Links */}

@@ -22,6 +22,16 @@ function App() {
             <Route path="/signin" element={<div className="placeholder">Sign In Page</div>} />
             <Route path="/signup" element={<div className="placeholder">Sign Up Page</div>} />
             <Route path="/privacy" element={<div className="placeholder">Privacy Policy Page</div>} />
+
+            {/* Dashboard and other related routes */}
+            <Route path="/dashboard" element={<div className="placeholder">Dashboard Page</div>} />
+            <Route path="/profile" element={<div className="placeholder">Profile Page</div>} />
+            <Route path="/myProjects" element={<div className="placeholder">My Projects Page</div>} />
+            <Route path="/findDevelopers" element={<div className="placeholder">Find Developers Page</div>} />
+            <Route path="/findClients" element={<div className="placeholder">Find Clients Page</div>} />
+            <Route path="/messages" element={<div className="placeholder">Messages Page</div>} />
+            <Route path="/payments" element={<div className="placeholder">Payments Page</div>} />
+            <Route path="/settings" element={<div className="placeholder">Settings Page</div>} />
           </Routes>
         </main>
         <Footer />
