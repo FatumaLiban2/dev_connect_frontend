@@ -1,0 +1,605 @@
+/* Payment Dashboard - Figma Design Match */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.payment-dashboard-figma {
+  min-height: 100vh;
+  background: #f8f9fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  padding: 32px 48px;
+}
+
+.payment-container-figma {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ===== TOP HEADER WITH SEARCH ===== */
+.top-header-figma {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.search-bar-figma {
+  flex: 1;
+  max-width: 380px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 1px solid #e8eaed;
+  border-radius: 24px;
+  padding: 14px 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.search-bar-figma:focus-within {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.search-icon {
+  font-size: 16px;
+  margin-right: 12px;
+  color: #9ca3af;
+}
+
+.search-input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #1f2937;
+  flex: 1;
+  background: transparent;
+  font-weight: 400;
+}
+
+.search-input::placeholder {
+  color: #9ca3af;
+}
+
+.header-right-figma {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.notification-btn-figma {
+  position: relative;
+  background: white;
+  border: 1px solid #e8eaed;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.notification-btn-figma:hover {
+  background: #f9fafb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+}
+
+.notification-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: #ef4444;
+  color: white;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  font-weight: 700;
+}
+
+.profile-avatar-figma {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid white;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.profile-avatar-figma:hover {
+  transform: scale(1.05);
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ===== STATS AND ACTIVITY SECTION ===== */
+.stats-activity-section {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.stats-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 20px;
+  padding: 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border: 1px solid #f0f1f3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.stat-icon-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.stat-icon-circle.cyan {
+  background: linear-gradient(135deg, #67e8f9 0%, #22d3ee 50%, #06b6d4 100%);
+  box-shadow: 0 8px 16px rgba(6, 182, 212, 0.25);
+}
+
+.stat-icon-circle.mint {
+  background: linear-gradient(135deg, #a7f3d0 0%, #6ee7b7 50%, #34d399 100%);
+  box-shadow: 0 8px 16px rgba(52, 211, 153, 0.25);
+}
+
+.stat-icon-circle.purple {
+  background: linear-gradient(135deg, #c084fc 0%, #a855f7 50%, #9333ea 100%);
+  box-shadow: 0 8px 16px rgba(168, 85, 247, 0.25);
+}
+
+.stat-icon-circle.indigo {
+  background: linear-gradient(135deg, #818cf8 0%, #6366f1 50%, #4f46e5 100%);
+  box-shadow: 0 8px 16px rgba(99, 102, 241, 0.25);
+}
+
+.stat-arrow {
+  color: white;
+  font-weight: 900;
+  font-size: 32px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.02em;
+}
+
+/* ===== ACTIVITY CARD ===== */
+.activity-column {
+  display: flex;
+}
+
+.activity-card {
+  background: white;
+  border-radius: 20px;
+  padding: 28px;
+  flex: 1;
+  border: 1px solid #f0f1f3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.activity-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.activity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.activity-header h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.activity-period {
+  font-size: 13px;
+  color: #9ca3af;
+  font-weight: 500;
+  background: #f9fafb;
+  padding: 6px 14px;
+  border-radius: 12px;
+}
+
+.chart-container {
+  height: 200px;
+  margin-bottom: 20px;
+  background: #fafbfc;
+  border-radius: 16px;
+  padding: 20px;
+  position: relative;
+}
+
+.activity-chart {
+  width: 100%;
+  height: 100%;
+}
+
+.chart-months {
+  display: flex;
+  justify-content: space-around;
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.active-month {
+  color: #3b82f6;
+  font-weight: 700;
+  position: relative;
+}
+
+.active-month::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  background: #3b82f6;
+  border-radius: 2px;
+}
+
+.active-month.developer::after {
+  background: #8b5cf6;
+}
+
+/* ===== TRANSACTION SECTION ===== */
+.transaction-section-figma {
+  background: white;
+  border-radius: 20px;
+  padding: 28px;
+  border: 1px solid #f0f1f3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.transaction-header-figma {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.transaction-header-figma h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.transaction-filter {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 14px;
+  color: #6b7280;
+  cursor: pointer;
+  outline: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.transaction-filter:hover {
+  background: white;
+  border-color: #d1d5db;
+}
+
+.transaction-filter:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* ===== TRANSACTION LIST ===== */
+.transaction-list-figma {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.transaction-item-figma {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 0;
+  border-bottom: 1px solid #f3f4f6;
+  transition: all 0.2s ease;
+}
+
+.transaction-item-figma:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.transaction-item-figma:hover {
+  background: #fafbfc;
+  margin: 0 -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  border-radius: 12px;
+}
+
+.transaction-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+}
+
+.transaction-icon-figma {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #f9fafb;
+  border: 2px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.transaction-item-figma:hover .transaction-icon-figma {
+  transform: scale(1.05);
+  border-color: #d1d5db;
+}
+
+.transaction-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.transaction-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  letter-spacing: -0.01em;
+}
+
+.transaction-date {
+  font-size: 13px;
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.transaction-right {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.transaction-category-figma {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #6b7280;
+  background: #f9fafb;
+  padding: 8px 16px;
+  border-radius: 10px;
+  min-width: 160px;
+  font-weight: 500;
+  border: 1px solid #f0f1f3;
+}
+
+.category-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fbbf24;
+  flex-shrink: 0;
+}
+
+.transaction-trend {
+  width: 70px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fafbfc;
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+
+.transaction-amount-figma {
+  font-size: 17px;
+  font-weight: 700;
+  min-width: 90px;
+  text-align: right;
+  letter-spacing: -0.02em;
+}
+
+.transaction-amount-figma.positive {
+  color: #10b981;
+}
+
+.transaction-amount-figma.negative {
+  color: #111827;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 1200px) {
+  .stats-activity-section {
+    grid-template-columns: 340px 1fr;
+  }
+}
+
+@media (max-width: 1024px) {
+  .payment-dashboard-figma {
+    padding: 24px 32px;
+  }
+  
+  .stats-activity-section {
+    grid-template-columns: 1fr;
+  }
+  
+  .activity-card {
+    min-height: 320px;
+  }
+  
+  .transaction-right {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .payment-dashboard-figma {
+    padding: 20px;
+  }
+  
+  .top-header-figma {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+    margin-bottom: 32px;
+  }
+  
+  .search-bar-figma {
+    max-width: 100%;
+  }
+  
+  .header-right-figma {
+    justify-content: flex-end;
+  }
+  
+  .stats-column {
+    gap: 16px;
+  }
+  
+  .stat-card {
+    padding: 24px;
+  }
+  
+  .stat-icon-circle {
+    width: 56px;
+    height: 56px;
+  }
+  
+  .transaction-section-figma {
+    padding: 24px;
+  }
+  
+  .transaction-item-figma {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .transaction-right {
+    width: 100%;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  
+  .transaction-category-figma {
+    min-width: auto;
+    flex: 1;
+  }
+  
+  .transaction-amount-figma {
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .payment-dashboard-figma {
+    padding: 16px;
+  }
+  
+  .stat-card {
+    padding: 20px;
+    gap: 16px;
+  }
+  
+  .stat-icon-circle {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+  }
+  
+  .stat-value {
+    font-size: 18px;
+  }
+  
+  .activity-card {
+    padding: 20px;
+  }
+  
+  .chart-container {
+    height: 160px;
+  }
+  
+  .transaction-icon-figma {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+}
