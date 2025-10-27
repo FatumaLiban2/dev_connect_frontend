@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ClientPayment from './components/ClientPayment';
+import DeveloperPayment from './components/DeveloperPayment';
 import './App.css';
 
 function App() {
@@ -30,7 +32,10 @@ function App() {
             <Route path="/findDevelopers" element={<div className="placeholder">Find Developers Page</div>} />
             <Route path="/findClients" element={<div className="placeholder">Find Clients Page</div>} />
             <Route path="/messages" element={<div className="placeholder">Messages Page</div>} />
-            <Route path="/payments" element={<div className="placeholder">Payments Page</div>} />
+            <Route path="/client-payments" element={<ClientPayment />} />
+            <Route path="/payments" element={<ClientPayment />} />
+            <Route path="/payments/client" element={<ClientPayment />} />
+            <Route path="/payments/developer" element={<DeveloperPayment />} /> 
             <Route path="/settings" element={<div className="placeholder">Settings Page</div>} />
           </Routes>
         </main>
