@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Authentication.css';
 
-// NOTE: You still need to create the actual image file in your 'src/assets' folder.
-// import authIllustration from '../assets/auth-illustration.svg';
+// Import the new image
+import authIllustration from '../assets/authlogo.png';  
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -33,9 +33,9 @@ const LoginPage = () => {
           <div className="auth-logo">
             {`{•}`} DevConnect
           </div>
-          {/* Replace this div with the actual image when you have it */}
-          {/* <img src={authIllustration} alt="Community illustration" className="auth-illustration" /> */}
-          <div className="auth-illustration-placeholder"></div>
+       
+          <img src={authIllustration} alt="Community illustration" className="auth-illustration" />
+          
           <h1 className="auth-tagline">A Community Connecting Developers and Clients</h1>
         </div>
         <div className="auth-right-panel">

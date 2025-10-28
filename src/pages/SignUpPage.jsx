@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Authentication.css';
 
-// NOTE: You still need to create the actual image file in your 'src/assets' folder.
-// import authIllustration from '../assets/auth-illustration.svg';
+// Import the new image
+import authIllustration from '../assets/authlogo.png';
+
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -28,7 +29,7 @@ const SignUpPage = () => {
       return;
     }
     console.log('Signing Up with:', formData);
-    // In a real app, you would send this data to your backend API
+    // Data to be sent in the backend api call
     alert(`Welcome, ${formData.username}! Check the console for the submitted data.`);
   };
 
@@ -39,9 +40,10 @@ const SignUpPage = () => {
           <div className="auth-logo">
             {`{•}`} DevConnect
           </div>
-          {/* Replace this div with the actual image when you have it */}
-          {/* <img src={authIllustration} alt="Community illustration" className="auth-illustration" /> */}
-          <div className="auth-illustration-placeholder"></div>
+          
+
+          <img src={authIllustration} alt="Community illustration" className="auth-illustration" />
+
           <h1 className="auth-tagline">A Community Connecting Developers and Clients</h1>
         </div>
         <div className="auth-right-panel">
