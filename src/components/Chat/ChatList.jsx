@@ -8,8 +8,9 @@ const ChatList = ({ onSelectChat, activeChat, userRole = 'client' }) => {
   // For CLIENT: Shows only developers they've worked with on projects
   // For DEVELOPER: Shows only clients whose projects they've taken
   const allChats = [
+    // Developers (shown to clients)
     {
-      id: 'user2',
+      id: 'dev1',
       name: 'Alex Developer',
       lastMessage: 'That sounds good!',
       timestamp: '10:56',
@@ -17,10 +18,10 @@ const ChatList = ({ onSelectChat, activeChat, userRole = 'client' }) => {
       online: true,
       avatar: null,
       type: 'developer',
-      projectId: 'proj1' // They're working together on a project
+      projectId: 'proj1'
     },
     {
-      id: 'user4',
+      id: 'dev2',
       name: 'Mike Frontend',
       lastMessage: 'I have experience with React...',
       timestamp: 'Yesterday',
@@ -31,8 +32,8 @@ const ChatList = ({ onSelectChat, activeChat, userRole = 'client' }) => {
       projectId: 'proj2'
     },
     {
-      id: 'user6',
-      name: 'John Backend',
+      id: 'dev3',
+      name: 'Sarah Fullstack',
       lastMessage: 'I can help with the API integration',
       timestamp: 'Friday',
       unread: 0,
@@ -40,6 +41,40 @@ const ChatList = ({ onSelectChat, activeChat, userRole = 'client' }) => {
       avatar: null,
       type: 'developer',
       projectId: 'proj3'
+    },
+    // Clients (shown to developers)
+    {
+      id: 'client1',
+      name: 'John Client',
+      lastMessage: 'When can you start the project?',
+      timestamp: '11:30',
+      unread: 1,
+      online: true,
+      avatar: null,
+      type: 'client',
+      projectId: 'proj4'
+    },
+    {
+      id: 'client2',
+      name: 'Emma Business',
+      lastMessage: 'Thanks for the update!',
+      timestamp: 'Yesterday',
+      unread: 0,
+      online: true,
+      avatar: null,
+      type: 'client',
+      projectId: 'proj5'
+    },
+    {
+      id: 'client3',
+      name: 'David Startup',
+      lastMessage: 'Can we discuss the budget?',
+      timestamp: 'Monday',
+      unread: 3,
+      online: false,
+      avatar: null,
+      type: 'client',
+      projectId: 'proj6'
     },
   ];
 
