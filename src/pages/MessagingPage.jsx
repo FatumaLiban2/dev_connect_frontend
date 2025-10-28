@@ -10,8 +10,10 @@ const MessagingPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   
-  // Set to 'client' for client interface, 'developer' for developer interface
-  const userRole = 'client'; // This will come from auth context later
+  // TODO: Get user role from auth context when authentication is ready
+  // Example: const { user } = useAuth(); const userRole = user.role;
+  // For now, you can manually test by changing between 'client' and 'developer'
+  const userRole = 'client'; // Will be: user.role from auth context
 
   // Auto-select chat if userId is in URL (e.g., /messages?userId=user2)
   useEffect(() => {
@@ -76,9 +78,21 @@ const MessagingPage = () => {
                   strokeLinejoin="round"
                 />
               </svg>
-              <h2>DevConnect Client Messaging</h2>
-              <p>Select a developer to start messaging</p>
-              <p className="subtitle">Chat with developers working on your projects</p>
+              <h2>
+                {userRole === 'client' 
+                  ? 'DevConnect Client Messaging' 
+                  : 'DevConnect Developer Messaging'}
+              </h2>
+              <p>
+                {userRole === 'client'
+                  ? 'Select a developer to start messaging'
+                  : 'Select a client to start messaging'}
+              </p>
+              <p className="subtitle">
+                {userRole === 'client'
+                  ? 'Chat with developers working on your projects'
+                  : 'Chat with clients whose projects you\'ve taken'}
+              </p>
             </div>
           </div>
         )}
