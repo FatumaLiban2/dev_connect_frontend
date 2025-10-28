@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import '../styles/Navbar.css';
 import Logo from './Logo';
 
-const Navbar = () => {
+const Navbar = ({ onSigninClick, onSignupClick }) => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -37,12 +37,12 @@ const Navbar = () => {
 
         {/* Auth Buttons */}
         <div className="nav-auth">
-          <Link to="/signin" className="btn-signin">
+          <button onClick={onSigninClick} className="btn-signin">
             SIGN IN
-          </Link>
-          <Link to="/signup" className="btn-signup">
+          </button>
+          <button onClick={onSignupClick} className="btn-signup">
             SIGN UP
-          </Link>
+          </button>
         </div>
       </div>
     </nav>
