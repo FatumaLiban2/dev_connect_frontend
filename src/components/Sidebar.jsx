@@ -5,7 +5,7 @@ import ProjectsIcon from "../assets/icons/ProfileIcon.svg";
 import ProfileIcon from "../assets/icons/ProfileIcon.svg";
 import FindClientsIcon from "../assets/icons/GroupIcon.svg";
 import FindDeverlopersIcon from "../assets/icons/GroupIcon.svg";
-import MessagesIcon from "../assets/icons/MessagesIcon.svg";
+import MessagesIcon from "../assets/icons/MessageIcon.svg";
 import PaymentIcon from "../assets/icons/PaymentIcon.svg";
 import SettingsIcon from "../assets/icons/SettingsIcon.svg";
 import LogoutIcon from "../assets/icons/LogoutIcon.svg";

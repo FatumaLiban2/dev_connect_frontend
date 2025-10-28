@@ -1,0 +1,61 @@
+/* Message Button Styles */
+
+.message-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+/* Primary Variant - Purple gradient */
+.message-button.primary {
+  background: linear-gradient(135deg, #7b3ede 0%, #a855f7 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(123, 62, 222, 0.3);
+}
+
+.message-button.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(123, 62, 222, 0.4);
+}
+
+/* Secondary Variant - Outlined */
+.message-button.secondary {
+  background: white;
+  color: #7b3ede;
+  border: 2px solid #7b3ede;
+}
+
+.message-button.secondary:hover {
+  background: #7b3ede;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Icon Only Variant */
+.message-button.icon-only {
+  padding: 0.75rem;
+  background: #f5f5f5;
+  color: #7b3ede;
+}
+
+.message-button.icon-only:hover {
+  background: #7b3ede;
+  color: white;
+  transform: scale(1.1);
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .message-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
