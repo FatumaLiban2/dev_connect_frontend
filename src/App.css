@@ -15,6 +15,11 @@
   padding: 2rem;
 }
 
+.app-body {
+  display: flex;
+  align-items: flex-start;
+}
+
 .placeholder {
   display: flex;
   align-items: center;
