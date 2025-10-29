@@ -4,7 +4,7 @@ import '../styles/Authentication.css';
 // Import the new image
 import authIllustration from '../assets/authlogo.png';  
 
-const LoginPage = ({ isOpen, onClose, onSwitchToSignup }) => {
+const LoginPage = ({ isOpen, onClose, onSwitchToSignup, onSwitchToForgotPassword }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -56,7 +56,13 @@ const LoginPage = ({ isOpen, onClose, onSwitchToSignup }) => {
                   <input type="password" id="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
                 </div>
                 <div className="form-options">
-                  <a href="#" className="forgot-password">Forgot Password?</a>
+                  <button 
+                    type="button"
+                    onClick={onSwitchToForgotPassword} 
+                    className="forgot-password"
+                  >
+                    Forgot Password?
+                  </button>
                 </div>
                 <button type="submit" className="auth-submit-btn">SIGN IN</button>
               </form>

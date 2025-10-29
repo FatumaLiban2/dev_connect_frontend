@@ -10,6 +10,8 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import MyProjects from './pages/MyProjectClient';
+import ResetPasswordPage from './pages/ResetPasswordPage';
+import ForgotpasswordPage from './pages/ForgotPasswordPage';
 import './App.css';
 
 // Layout wrapper to conditionally show Navbar/Footer
@@ -53,15 +55,18 @@ function Layout({ children, onSigninClick, onSignupClick }) {
 function App() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] = useState(false);
 
   const handleSigninClick = () => {
     setIsLoginModalOpen(true);
     setIsSignupModalOpen(false);
+    setIsResetPasswordModalOpen(false);
   };
 
   const handleSignupClick = () => {
     setIsSignupModalOpen(true);
     setIsLoginModalOpen(false);
+    setIsResetPasswordModalOpen(false);
   };
 
   const closeLoginModal = () => {
@@ -72,14 +77,26 @@ function App() {
     setIsSignupModalOpen(false);
   };
 
+  const closeResetPasswordModal = () => {
+    setIsResetPasswordModalOpen(false);
+  };
+
   const switchToSignup = () => {
     setIsLoginModalOpen(false);
     setIsSignupModalOpen(true);
+    setIsResetPasswordModalOpen(false);
   };
 
   const switchToSignin = () => {
     setIsSignupModalOpen(false);
+    setIsResetPasswordModalOpen(false);
     setIsLoginModalOpen(true);
+  };
+
+  const switchToResetPassword = () => {
+    setIsLoginModalOpen(false);
+    setIsSignupModalOpen(false);
+    setIsResetPasswordModalOpen(true);
   };
 
   return (
@@ -122,10 +139,16 @@ function App() {
         isOpen={isLoginModalOpen}
         onClose={closeLoginModal}
         onSwitchToSignup={switchToSignup}
+        onSwitchToForgotPassword={switchToResetPassword}
       />
       <SignUpPage 
         isOpen={isSignupModalOpen}
         onClose={closeSignupModal}
+        onSwitchToSignin={switchToSignin}
+      />
+      <ResetPasswordPage 
+        isOpen={isResetPasswordModalOpen}
+        onClose={closeResetPasswordModal}
         onSwitchToSignin={switchToSignin}
       />
     </Router>
