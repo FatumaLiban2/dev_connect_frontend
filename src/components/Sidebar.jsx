@@ -15,6 +15,7 @@ export default function Sidebar() {
     return (
         <div className="sidebar-container">
             <Logo />
+                <SidebarButton to="/myProjects" icon={ProjectsIcon} label="My Projects" />
             <SidebarButton to="/dashboard" icon={DashboardIcon} label="Dashboard" />
             <SidebarButton to="/profile" icon={ProfileIcon} label="Profile" />
             <SidebarButton to="/findClients" icon={FindClientsIcon} label="Find Clients" />

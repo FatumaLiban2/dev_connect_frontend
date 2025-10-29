@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
 import ClientPayment from './components/ClientPayment';
 import DeveloperPayment from './components/DeveloperPayment';
@@ -8,6 +9,7 @@ import MessagingPage from './pages/MessagingPage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
+import MyProjects from './pages/MyProjectClient';
 import './App.css';
 
 // Layout wrapper to conditionally show Navbar/Footer
@@ -17,6 +19,19 @@ function Layout({ children, onSigninClick, onSignupClick }) {
     location.pathname.startsWith(path)
   );
 
+  // Show global sidebar on dashboard-like routes
+  const sidebarRoutes = [
+    '/dashboard',
+    '/profile',
+    '/myProjects',
+    '/findDevelopers',
+    '/findClients',
+    '/settings',
+    '/payments',
+    '/client-payments',
+  ];
+  const showSidebar = sidebarRoutes.some(path => location.pathname.startsWith(path));
+
   if (hideNavAndFooter) {
     return <>{children}</>;
   }
@@ -24,9 +39,12 @@ function Layout({ children, onSigninClick, onSignupClick }) {
   return (
     <div className="app">
       <Navbar onSigninClick={onSigninClick} onSignupClick={onSignupClick} />
-      <main className="main-content">
-        {children}
-      </main>
+      <div className="app-body">
+        {showSidebar && <Sidebar />}
+        <main className="main-content">
+          {children}
+        </main>
+      </div>
       <Footer />
     </div>
   );
@@ -82,7 +100,7 @@ function App() {
           {/* Dashboard and other related routes */}
           <Route path="/dashboard" element={<div className="placeholder">Dashboard Page</div>} />
           <Route path="/profile" element={<div className="placeholder">Profile Page</div>} />
-          <Route path="/myProjects" element={<div className="placeholder">My Projects Page</div>} />
+          <Route path="/myProjects" element={<MyProjects />} />
           <Route path="/findDevelopers" element={<div className="placeholder">Find Developers Page</div>} />
           <Route path="/findClients" element={<div className="placeholder">Find Clients Page</div>} />
           
