@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { useState } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ClientPayment from './components/ClientPayment';
@@ -10,7 +11,7 @@ import SignUpPage from './pages/SignUpPage';
 import './App.css';
 
 // Layout wrapper to conditionally show Navbar/Footer
-function Layout({ children }) {
+function Layout({ children, onSigninClick, onSignupClick }) {
   const location = useLocation();
   const hideNavAndFooter = ['/messages'].some(path => 
     location.pathname.startsWith(path)
@@ -22,7 +23,7 @@ function Layout({ children }) {
 
   return (
     <div className="app">
-      <Navbar />
+      <Navbar onSigninClick={onSigninClick} onSignupClick={onSignupClick} />
       <main className="main-content">
         {children}
       </main>
@@ -32,14 +33,43 @@ function Layout({ children }) {
 }
 
 function App() {
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+
+  const handleSigninClick = () => {
+    setIsLoginModalOpen(true);
+    setIsSignupModalOpen(false);
+  };
+
+  const handleSignupClick = () => {
+    setIsSignupModalOpen(true);
+    setIsLoginModalOpen(false);
+  };
+
+  const closeLoginModal = () => {
+    setIsLoginModalOpen(false);
+  };
+
+  const closeSignupModal = () => {
+    setIsSignupModalOpen(false);
+  };
+
+  const switchToSignup = () => {
+    setIsLoginModalOpen(false);
+    setIsSignupModalOpen(true);
+  };
+
+  const switchToSignin = () => {
+    setIsSignupModalOpen(false);
+    setIsLoginModalOpen(true);
+  };
+
   return (
     <Router>
-      <Layout>
+      <Layout onSigninClick={handleSigninClick} onSignupClick={handleSignupClick}>
         <Routes>
           {/* Main Pages */}
           <Route path="/" element={<HomePage />} />
-          <Route path="/signin" element={<LoginPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
           <Route path="/features" element={<div className="placeholder">Features Page</div>} />
           <Route path="/about" element={<div className="placeholder">About Page</div>} />
           <Route path="/contact" element={<div className="placeholder">Contact Page</div>} />
@@ -68,6 +98,18 @@ function App() {
           <Route path="/settings" element={<div className="placeholder">Settings Page</div>} />
         </Routes>
       </Layout>
+      
+      {/* Modal Components */}
+      <LoginPage 
+        isOpen={isLoginModalOpen}
+        onClose={closeLoginModal}
+        onSwitchToSignup={switchToSignup}
+      />
+      <SignUpPage 
+        isOpen={isSignupModalOpen}
+        onClose={closeSignupModal}
+        onSwitchToSignin={switchToSignin}
+      />
     </Router>
   );
 }
