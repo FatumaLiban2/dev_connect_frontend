@@ -1,5 +1,28 @@
 /* Authentication Pages Styles */
 
+/* Remove ALL default button and link styles that could cause purple */
+button, 
+button:link,
+button:visited,
+button:hover,
+button:active,
+button:focus,
+button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+}
+
+button::-moz-focus-inner {
+  border: 0;
+}
+
+/* Prevent purple link colors */
+.auth-modal-overlay *:link,
+.auth-modal-overlay *:visited {
+  color: inherit;
+}
+
 /* Modal Overlay */
 .auth-modal-overlay {
   position: fixed;
@@ -42,18 +65,44 @@
 
 /* Link Button */
 .auth-link-btn {
-  background: none;
-  border: none;
-  color: inherit;
-  text-decoration: underline;
+  background: none !important;
+  border: none !important;
+  color: #6366f1 !important;
+  text-decoration: none !important;
   cursor: pointer;
   font-size: inherit;
   padding: 0;
   margin: 0;
+  font-weight: 600;
+  transition: color 0.3s ease;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .auth-link-btn:hover {
-  opacity: 0.8;
+  color: #4f46e5 !important;
+  text-decoration: underline !important;
+  background: none !important;
+}
+
+.auth-link-btn:focus {
+  color: #4f46e5 !important;
+  text-decoration: underline !important;
+  outline: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+.auth-link-btn:active {
+  color: #4f46e5 !important;
+  outline: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+.auth-link-btn:visited {
+  color: #6366f1 !important;
+  background: none !important;
 }
 
 .auth-page-container {
@@ -212,15 +261,39 @@
 }
 
 .forgot-password {
-  color: #6366f1;
-  text-decoration: none;
+  color: #6366f1 !important;
+  text-decoration: none !important;
   font-size: 14px;
   transition: color 0.3s ease;
+  outline: none !important;
+  background: none !important;
+  box-shadow: none !important;
 }
 
 .forgot-password:hover {
-  color: #4f46e5;
-  text-decoration: underline;
+  color: #4f46e5 !important;
+  text-decoration: underline !important;
+  background: none !important;
+}
+
+.forgot-password:focus {
+  color: #4f46e5 !important;
+  text-decoration: underline !important;
+  outline: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+.forgot-password:active {
+  color: #4f46e5 !important;
+  outline: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+.forgot-password:visited {
+  color: #6366f1 !important;
+  background: none !important;
 }
 
 .auth-submit-btn {
@@ -251,6 +324,46 @@
   margin-top: 32px;
   color: #6b7280;
   font-size: 14px;
+}
+
+.auth-redirect .auth-link-btn {
+  color: #6366f1 !important;
+  text-decoration: none !important;
+  font-weight: 600;
+  background: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.auth-redirect .auth-link-btn:hover {
+  color: #4f46e5 !important;
+  text-decoration: underline !important;
+  background: none !important;
+}
+
+.auth-redirect .auth-link-btn:focus {
+  color: #4f46e5 !important;
+  text-decoration: underline !important;
+  outline: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+.auth-redirect .auth-link-btn:active {
+  color: #4f46e5 !important;
+  outline: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+.auth-redirect .auth-link-btn:visited {
+  color: #6366f1 !important;
+  background: none !important;
 }
 
 .auth-redirect a {
