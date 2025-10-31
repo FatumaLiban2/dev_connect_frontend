@@ -12,6 +12,7 @@ import SignUpPage from './pages/SignUpPage';
 import MyProjects from './pages/MyProjectClient';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import ForgotpasswordPage from './pages/ForgotPasswordPage';
+import FindDevelopers from './pages/FindDevelopers';
 import './App.css';
 
 // Layout wrapper to conditionally show Navbar/Footer
@@ -118,7 +119,7 @@ function App() {
           <Route path="/dashboard" element={<div className="placeholder">Dashboard Page</div>} />
           <Route path="/profile" element={<div className="placeholder">Profile Page</div>} />
           <Route path="/myProjects" element={<MyProjects />} />
-          <Route path="/findDevelopers" element={<div className="placeholder">Find Developers Page</div>} />
+          <Route path="/findDevelopers" element={<FindDevelopers />} />
           <Route path="/findClients" element={<div className="placeholder">Find Clients Page</div>} />
           
           {/* Messaging - Client Interface */}

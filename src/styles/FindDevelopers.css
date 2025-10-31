@@ -1,0 +1,67 @@
+.find-dev-page {
+  padding: 32px;
+}
+
+.find-dev-header h1 {
+  font-size: 36px;
+  margin: 0 0 8px 0;
+}
+.find-dev-header .subtitle {
+  color: #888;
+  margin-bottom: 16px;
+}
+.search-row {
+  margin: 16px 0 24px 0;
+}
+.search-input {
+  width: 60%;
+  padding: 12px 16px;
+  border-radius: 24px;
+  border: 1px solid #eee;
+}
+
+.filters-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+}
+.filters .filter {
+  margin-right: 12px;
+  background:#0796d9;
+  border-radius: 20px;
+  padding: 8px 12px;
+  border: none;
+}
+.best-matches {
+  background:#f1f1f1;
+  padding:8px 12px;
+  border-radius: 20px;
+}
+
+.results-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 8px;
+}
+
+.dev-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+}
+.dev-left { display:flex; align-items:center; }
+.avatar { width:48px; height:48px; border-radius:50%; background:#ddd; margin-right:12px }
+.dev-name { font-weight:600 }
+.dev-role { color:#777; font-size:13px }
+.dev-rating { color:#222; margin-top:6px }
+.dev-actions button { margin-left:8px; border-radius:20px; padding:8px 14px; border:none }
+.btn-view { background:#61c2dd }
+.btn-hire { background:#61c2dd }
+.btn-more { background:transparent }
