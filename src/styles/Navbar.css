@@ -1,19 +1,29 @@
 .navbar {
   background-color: #f5f5f5;
-  padding: 1rem 2rem;
+  /* Remove horizontal padding from the bar itself so the container can go full-bleed */
+  padding: 0.75rem 0; /* was 1rem 2rem */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  /* Optional: keep navbar visible on scroll */
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
 .navbar-container {
-  max-width: 1400px;
+  /* Full viewport width with tiny gutters */
+  width: 100vw;
+  max-width: 100vw;        /* was max-width: 1400px */
   margin: 0 auto;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 2rem;
+  gap: clamp(8px, 1vw, 20px);
+
+  /* Tiny left/right padding so items sit near the edges */
+  padding-inline: clamp(8px, 1vw, 16px);
 }
 
-/* Logo Section */
+/* Logo Section (kept for compatibility if you use this class) */
 .navbar-logo {
   display: flex;
   align-items: center;
@@ -21,10 +31,7 @@
   text-decoration: none;
   transition: opacity 0.3s ease;
 }
-
-.navbar-logo:hover {
-  opacity: 0.8;
-}
+.navbar-logo:hover { opacity: 0.8; }
 
 .logo-icon {
   width: 45px;
@@ -32,27 +39,27 @@
   object-fit: contain;
   display: block;
 }
-
 .logo-text {
   font-size: 1.75rem;
   font-weight: 700;
   color: #1a1a1a;
 }
 
-/* Navigation Menu */
+/* Navigation Menu - centered */
 .nav-menu {
   display: flex;
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 2.5rem;
+
+  /* Fill the middle, keep centered */
   flex: 1;
   justify-content: center;
+
+  gap: 2.5rem;
 }
 
-.nav-item {
-  margin: 0;
-}
+.nav-item { margin: 0; }
 
 .nav-link {
   text-decoration: none;
@@ -62,10 +69,7 @@
   transition: color 0.3s ease;
   position: relative;
 }
-
-.nav-link:hover {
-  color: #8b7dd6;
-}
+.nav-link:hover { color: #8b7dd6; }
 
 .nav-link::after {
   content: '';
@@ -77,13 +81,11 @@
   background-color: #8b7dd6;
   transition: width 0.3s ease;
 }
+.nav-link:hover::after { width: 100%; }
 
-.nav-link:hover::after {
-  width: 100%;
-}
-
-/* Auth Buttons */
+/* Auth Buttons - force to far right */
 .nav-auth {
+  margin-left: auto;  /* NEW: pushes auth buttons to the far right */
   display: flex;
   gap: 1rem;
 }
@@ -106,7 +108,6 @@
   background-color: transparent;
   color: #1a1a1a;
 }
-
 .btn-signin:hover {
   background-color: #1a1a1a;
   color: #f5f5f5;
@@ -116,7 +117,6 @@
   background-color: transparent;
   color: #1a1a1a;
 }
-
 .btn-signup:hover {
   background-color: #1a1a1a;
   color: #f5f5f5;
@@ -140,7 +140,7 @@
 
 @media screen and (max-width: 768px) {
   .navbar {
-    padding: 1rem;
+    padding: 0.75rem 0; /* keep smaller vertical padding on mobile too */
   }
 
   .nav-menu {
@@ -148,9 +148,7 @@
     gap: 1.5rem;
   }
 
-  .nav-auth {
-    gap: 0.5rem;
-  }
+  .nav-auth { gap: 0.5rem; }
 
   .btn-signin,
   .btn-signup {
@@ -158,9 +156,7 @@
     font-size: 0.85rem;
   }
 
-  .logo-text {
-    font-size: 1.5rem;
-  }
+  .logo-text { font-size: 1.5rem; }
 
   .logo-icon {
     width: 38px;
