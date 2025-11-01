@@ -1,0 +1,109 @@
+.profile-container {
+  display: flex;
+  background-color: #f8f9ff;
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+}
+
+.profile-content {
+  flex: 1;
+  padding: 40px;
+}
+
+.profile-content h1 {
+  font-size: 28px;
+  color: #222;
+}
+
+.subtitle {
+  color: #9c9c9c;
+  margin-bottom: 30px;
+}
+
+/* Edit Profile Section */
+.edit-profile {
+  background: #fff;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 40px;
+}
+
+.edit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.edit-header i {
+  font-size: 24px;
+  color: #6b46ff;
+}
+
+.edit-fields .field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.edit-fields label {
+  flex: 0.2;
+  font-weight: 500;
+  color: #333;
+}
+
+.edit-fields input {
+  flex: 0.7;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+}
+
+/* Clients Section */
+.my-clients {
+  background: #fff;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.client-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #efefef;
+  padding: 12px 0;
+}
+
+.client-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.client-info i {
+  font-size: 18px;
+  color: #6b46ff;
+}
+
+.client-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.client-actions button {
+  background-color: #efefef;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.3s;
+}
+
+.client-actions button:hover {
+  background-color: #d7d5ff;
+}

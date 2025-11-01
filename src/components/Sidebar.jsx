@@ -21,7 +21,7 @@ export default function Sidebar() {
             <SidebarButton to="/findClients" icon={FindClientsIcon} label="Find Clients" />
             <SidebarButton to="/findDevelopers" icon={FindDeverlopersIcon} label="Find Developers" />
             <SidebarButton to="/messages" icon={MessagesIcon} label="Messages" />
-            <SidebarButton to="/payment" icon={PaymentIcon} label="Payment" />
+            <SidebarButton to="/payments" icon={PaymentIcon} label="Payment" />
             <SidebarButton to="/settings" icon={SettingsIcon} label="Settings" />
             <SidebarButton to="/logout" icon={LogoutIcon} label="Logout" />
         </div>

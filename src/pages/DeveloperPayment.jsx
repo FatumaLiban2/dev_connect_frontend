@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import Sidebar from '../components/Sidebar'; 
+import '../styles/Sidebar.css';
 import '../styles/Payment.css';
 
 const DeveloperPayment = () => {
@@ -9,6 +11,7 @@ const DeveloperPayment = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [activityData, setActivityData] = useState([]);
+  const [lastRefresh, setLastRefresh] = useState(Date.now());
 
   // Placeholder data for developers (earnings focused)
   const placeholderTransactions = [
@@ -59,7 +62,15 @@ const DeveloperPayment = () => {
 
   useEffect(() => {
     fetchPaymentData();
-  }, []);
+    
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(() => {
+      fetchPaymentData();
+      setLastRefresh(Date.now());
+    }, 30000);
+    
+    return () => clearInterval(interval);
+  }, [lastRefresh]);
 
   const fetchPaymentData = async () => {
     const currentUserId = localStorage.getItem('userId');
@@ -101,6 +112,12 @@ const DeveloperPayment = () => {
       setBalance(6169.00);
       setActivityData(placeholderActivity);
     }
+  };
+
+  // Manual refresh function
+  const handleManualRefresh = () => {
+    fetchPaymentData();
+    setLastRefresh(Date.now());
   };
 
   // Generate dynamic SVG path from activity data
@@ -196,6 +213,14 @@ const DeveloperPayment = () => {
             />
           </div>
           <div className="header-right-figma">
+            <button 
+              onClick={handleManualRefresh} 
+              className="notification-btn-figma" 
+              aria-label="Refresh"
+              style={{ marginRight: '10px' }}
+            >
+              🔄
+            </button>
             <button className="notification-btn-figma" aria-label="Notifications">
               🔔
               <span className="notification-badge">3</span>

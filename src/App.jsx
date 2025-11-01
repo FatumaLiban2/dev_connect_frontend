@@ -3,8 +3,8 @@ import { useState } from 'react';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
-import ClientPayment from './components/ClientPayment';
-import DeveloperPayment from './components/DeveloperPayment';
+import ClientPayment from './pages/ClientPayment';
+import DeveloperPayment from './pages/DeveloperPayment';
 import MessagingPage from './pages/MessagingPage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -16,6 +16,7 @@ import FindDevelopers from './pages/FindDevelopers';
 import ContinueAsPage from './pages/ContinueAsPage';
 
 import './App.css';
+import RoleSelectionPage from './pages/RoleSelectionPage';
 
   // Layout wrapper to conditionally show Navbar/Footer
 function Layout({ children, onSigninClick, onSignupClick }) {
