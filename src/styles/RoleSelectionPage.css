@@ -1,0 +1,163 @@
+.role-selection-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #d4b5c8 0%, #c9a8bc 100%);
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.role-selection-container {
+  max-width: 1200px;
+  width: 100%;
+}
+
+.welcome-header {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 2rem 3rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c2c2c;
+  margin: 0 0 0.5rem 0;
+}
+
+.welcome-header p {
+  font-size: 1.1rem;
+  color: #5a5a5a;
+  margin: 0;
+}
+
+.role-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.role-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 30px;
+  padding: 2.5rem;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.role-card:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.client-card {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: white;
+}
+
+.developer-card {
+  background: rgba(255, 255, 255, 0.95);
+  color: #2c2c2c;
+  border: 2px solid #e5e5e5;
+}
+
+.role-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  color: inherit;
+}
+
+.client-card .role-icon {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.developer-card .role-icon {
+  color: #2c2c2c;
+}
+
+.role-card h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  text-align: center;
+}
+
+.role-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0 0 1.5rem 0;
+  text-align: center;
+  opacity: 0.95;
+}
+
+.role-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.role-features li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.bullet-icon {
+  font-size: 1.5rem;
+  margin-right: 0.75rem;
+  font-weight: bold;
+}
+
+.client-card .role-features li {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.developer-card .role-features li {
+  color: #4a4a4a;
+}
+
+@media (max-width: 900px) {
+  .role-cards-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .welcome-header h1 {
+    font-size: 2rem;
+  }
+  
+  .role-card {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .role-selection-page {
+    padding: 1rem;
+  }
+  
+  .welcome-header {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .welcome-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .welcome-header p {
+    font-size: 0.95rem;
+  }
+  
+  .role-card h2 {
+    font-size: 1.5rem;
+  }
+}
