@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import Sidebar from './Sidebar'; // Import the Sidebar component
+import '../styles/Sidebar.css';
 import '../styles/Payment.css';
 
 const ClientPayment = () => {
