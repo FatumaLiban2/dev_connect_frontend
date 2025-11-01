@@ -14,6 +14,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import ForgotpasswordPage from './pages/ForgotPasswordPage';
 import FindDevelopers from './pages/FindDevelopers';
 import './App.css';
+import RoleSelectionPage from './pages/RoleSelectionPage';
 
 // Layout wrapper to conditionally show Navbar/Footer
 function Layout({ children, onSigninClick, onSignupClick }) {
