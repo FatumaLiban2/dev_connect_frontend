@@ -116,22 +116,19 @@ function App() {
           <Route path="/blog" element={<div className="placeholder">Blog Page</div>} />
           <Route path="/privacy" element={<div className="placeholder">Privacy Policy Page</div>} />
 
-          {/* Dashboard and other related routes */}
+        {/* Routes that render with the sidebar layout */}
+        <Route element={<SidebarLayout role={userRole} />}>
           <Route path="/dashboard" element={<div className="placeholder">Dashboard Page</div>} />
           <Route path="/profile" element={<div className="placeholder">Profile Page</div>} />
-          <Route path="/myProjects" element={<MyProjects />} />
-          <Route path="/findDevelopers" element={<FindDevelopers />} />
+          <Route path="/projects" element={<div className="placeholder">Projects Page</div>} />
+          <Route path="/findDevelopers" element={<div className="placeholder">Find Developers Page</div>} />
           <Route path="/findClients" element={<div className="placeholder">Find Clients Page</div>} />
-          
-          {/* Messaging - Client Interface */}
-          <Route path="/messages" element={<MessagingPage />} />
-          
-          {/* Payment Routes */}
+          <Route path="/messages" element={<MessagingPage userRole={userRole} />} />
           <Route path="/client-payments" element={<ClientPayment />} />
-          <Route path="/payments" element={<ClientPayment />} />
+          <Route path="/payments" element={paymentElement} />
+          <Route path="/payment" element={paymentElement} />
           <Route path="/payments/client" element={<ClientPayment />} />
-          <Route path="/payments/developer" element={<DeveloperPayment />} /> 
-          
+          <Route path="/payments/developer" element={<DeveloperPayment />} />
           <Route path="/settings" element={<div className="placeholder">Settings Page</div>} />
         </Routes>
       </Layout>
