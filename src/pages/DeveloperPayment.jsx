@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import Sidebar from '../components/Sidebar'; 
+import '../styles/Sidebar.css';
 import '../styles/Payment.css';
+
 const DeveloperPayment = () => {
   const [transactions, setTransactions] = useState([]);
   const [totalEarned, setTotalEarned] = useState(0);
@@ -7,6 +10,8 @@ const DeveloperPayment = () => {
   const [userId, setUserId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState('all');
+  const [activityData, setActivityData] = useState([]);
+  const [lastRefresh, setLastRefresh] = useState(Date.now());
 
   // Placeholder data for developers (earnings focused)
   const placeholderTransactions = [
@@ -52,9 +57,20 @@ const DeveloperPayment = () => {
     }
   ];
 
+  // Updated placeholder activity data (12 months - January to December)
+  const placeholderActivity = [1200, 1600, 2100, 2900, 4200, 3800, 3500, 4100, 3900, 4500, 4800, 5200];
+
   useEffect(() => {
     fetchPaymentData();
-  }, []);
+    
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(() => {
+      fetchPaymentData();
+      setLastRefresh(Date.now());
+    }, 30000);
+    
+    return () => clearInterval(interval);
+  }, [lastRefresh]);
 
   const fetchPaymentData = async () => {
     const currentUserId = localStorage.getItem('userId');
@@ -63,6 +79,7 @@ const DeveloperPayment = () => {
       // Set placeholder data when not authenticated
       setTotalEarned(8168.00);
       setBalance(6169.00);
+      setActivityData(placeholderActivity);
       return;
     }
 
@@ -83,6 +100,9 @@ const DeveloperPayment = () => {
           setTransactions(data.transactions);
           setTotalEarned(data.totalEarned || 0);
           setBalance(data.balance || 0);
+          
+          // Set activity data from API (array of 12 months)
+          setActivityData(data.activityData || placeholderActivity);
         }
       }
     } catch (error) {
@@ -90,11 +110,60 @@ const DeveloperPayment = () => {
       // Fallback to placeholder on error
       setTotalEarned(8168.00);
       setBalance(6169.00);
+      setActivityData(placeholderActivity);
     }
+  };
+
+  // Manual refresh function
+  const handleManualRefresh = () => {
+    fetchPaymentData();
+    setLastRefresh(Date.now());
+  };
+
+  // Generate dynamic SVG path from activity data
+  const generateChartPath = (data) => {
+    if (!data || data.length === 0) return "M 0,150 L 600,150";
+    
+    const maxValue = Math.max(...data);
+    const minValue = Math.min(...data);
+    const range = maxValue - minValue || 1;
+    
+    const width = 600;
+    const height = 200;
+    const padding = 20;
+    const step = width / (data.length - 1);
+    
+    // Normalize data points to fit in chart
+    const points = data.map((value, index) => {
+      const x = index * step;
+      const normalized = ((value - minValue) / range);
+      const y = height - padding - (normalized * (height - 2 * padding));
+      return { x, y };
+    });
+    
+    // Create smooth bezier curve path
+    let path = `M ${points[0].x},${points[0].y}`;
+    
+    for (let i = 0; i < points.length - 1; i++) {
+      const current = points[i];
+      const next = points[i + 1];
+      const controlX = (current.x + next.x) / 2;
+      
+      path += ` Q ${controlX},${current.y} ${next.x},${next.y}`;
+    }
+    
+    return path;
+  };
+
+  // Generate filled area path
+  const generateFillPath = (data) => {
+    const linePath = generateChartPath(data);
+    return `${linePath} L 600,200 L 0,200 Z`;
   };
 
   // Filter and search logic
   const displayTransactions = transactions.length > 0 ? transactions : placeholderTransactions;
+  const displayActivity = activityData.length > 0 ? activityData : placeholderActivity;
   
   const filteredTransactions = displayTransactions.filter(transaction => {
     const matchesSearch = transaction.title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -144,6 +213,14 @@ const DeveloperPayment = () => {
             />
           </div>
           <div className="header-right-figma">
+            <button 
+              onClick={handleManualRefresh} 
+              className="notification-btn-figma" 
+              aria-label="Refresh"
+              style={{ marginRight: '10px' }}
+            >
+              🔄
+            </button>
             <button className="notification-btn-figma" aria-label="Notifications">
               🔔
               <span className="notification-badge">3</span>
@@ -166,7 +243,7 @@ const DeveloperPayment = () => {
                 <span className="stat-arrow">↗</span>
               </div>
               <div className="stat-info">
-                <div className="stat-label">Total earned this week</div>
+                <div className="stat-label">Total earned this year</div>
                 <div className="stat-value">KSH {formatCurrency(totalEarned)}</div>
               </div>
             </div>
@@ -186,7 +263,7 @@ const DeveloperPayment = () => {
             <div className="activity-card developer">
               <div className="activity-header">
                 <h3>Activity</h3>
-                <span className="activity-period">This week</span>
+                <span className="activity-period">This year</span>
               </div>
               <div className="chart-container">
                 <svg className="activity-chart" viewBox="0 0 600 200" preserveAspectRatio="none">
@@ -199,9 +276,9 @@ const DeveloperPayment = () => {
                       <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="rgba(139, 92, 246, 0.3)"/>
                     </filter>
                   </defs>
-                  {/* Chart curve with smooth bezier - upward trend for earnings */}
+                  {/* DYNAMIC Chart curve - updates with real data */}
                   <path
-                    d="M 0,160 Q 100,140 150,120 T 300,90 Q 400,70 450,80 T 600,75"
+                    d={generateChartPath(displayActivity)}
                     fill="none"
                     stroke="#8b5cf6"
                     strokeWidth="3.5"
@@ -209,9 +286,9 @@ const DeveloperPayment = () => {
                     strokeLinejoin="round"
                     filter="url(#shadowDev)"
                   />
-                  {/* Fill area */}
+                  {/* DYNAMIC Fill area */}
                   <path
-                    d="M 0,160 Q 100,140 150,120 T 300,90 Q 400,70 450,80 T 600,75 L 600,200 L 0,200 Z"
+                    d={generateFillPath(displayActivity)}
                     fill="url(#chartGradientDev)"
                   />
                 </svg>
@@ -221,9 +298,14 @@ const DeveloperPayment = () => {
                 <span>FEB</span>
                 <span>MAR</span>
                 <span>APR</span>
-                <span className="active-month developer">MAY</span>
+                <span>MAY</span>
                 <span>JUN</span>
                 <span>JUL</span>
+                <span>AUG</span>
+                <span>SEP</span>
+                <span>OCT</span>
+                <span>NOV</span>
+                <span className="active-month developer">DEC</span>
               </div>
             </div>
           </div>
