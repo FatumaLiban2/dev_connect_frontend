@@ -5,15 +5,10 @@ import { ChatProvider } from '../context/ChatContext';
 import ChatContainer from '../components/Chat/ChatContainer';
 import '../styles/MessagingLayout.css';
 
-const MessagingPage = () => {
+const MessagingPage = ({ userRole = 'client' }) => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  
-  // TODO: Get user role from auth context when authentication is ready
-  // Example: const { user } = useAuth(); const userRole = user.role;
-  // For now, you can manually test by changing between 'client' and 'developer'
-  const userRole = 'client'; // Will be: user.role from auth context
 
   // Auto-select chat if userId is in URL (e.g., /messages?userId=user2)
   useEffect(() => {

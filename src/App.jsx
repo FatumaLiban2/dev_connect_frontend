@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Outlet } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ClientPayment from './components/ClientPayment';
@@ -29,43 +29,44 @@ function Layout({ children }) {
 }
 
 function App() {
-  return (
-    <Router>
-      <Layout>
-        <Routes>
-          {/* Placeholder routes - pages to be created later */}
-          <Route path="/" element={<div className="placeholder">Home Page</div>} />
-          <Route path="/features" element={<div className="placeholder">Features Page</div>} />
-          <Route path="/about" element={<div className="placeholder">About Page</div>} />
-          <Route path="/contact" element={<div className="placeholder">Contact Page</div>} />
-          <Route path="/services" element={<div className="placeholder">Services Page</div>} />
-          <Route path="/use-cases" element={<div className="placeholder">Use Cases Page</div>} />
-          <Route path="/pricing" element={<div className="placeholder">Pricing Page</div>} />
-          <Route path="/blog" element={<div className="placeholder">Blog Page</div>} />
-          <Route path="/signin" element={<div className="placeholder">Sign In Page</div>} />
-          <Route path="/signup" element={<div className="placeholder">Sign Up Page</div>} />
-          <Route path="/privacy" element={<div className="placeholder">Privacy Policy Page</div>} />
+  // TODO: replace with authenticated user role
+  const userRole = 'client';
+  const paymentElement =
+    userRole === 'developer' ? <DeveloperPayment /> : <ClientPayment />;
 
-          {/* Dashboard and other related routes */}
+  return (
+    <Routes>
+      <Route element={<Layout />}>
+        {/* Public marketing routes with navbar/footer */}
+        <Route path="/" element={<div className="placeholder">Home Page</div>} />
+        <Route path="/features" element={<div className="placeholder">Features Page</div>} />
+        <Route path="/about" element={<div className="placeholder">About Page</div>} />
+        <Route path="/contact" element={<div className="placeholder">Contact Page</div>} />
+        <Route path="/services" element={<div className="placeholder">Services Page</div>} />
+        <Route path="/use-cases" element={<div className="placeholder">Use Cases Page</div>} />
+        <Route path="/pricing" element={<div className="placeholder">Pricing Page</div>} />
+        <Route path="/blog" element={<div className="placeholder">Blog Page</div>} />
+        <Route path="/signin" element={<div className="placeholder">Sign In Page</div>} />
+        <Route path="/signup" element={<div className="placeholder">Sign Up Page</div>} />
+        <Route path="/privacy" element={<div className="placeholder">Privacy Policy Page</div>} />
+
+        {/* Routes that render with the sidebar layout */}
+        <Route element={<SidebarLayout role={userRole} />}>
           <Route path="/dashboard" element={<div className="placeholder">Dashboard Page</div>} />
           <Route path="/profile" element={<div className="placeholder">Profile Page</div>} />
-          <Route path="/myProjects" element={<div className="placeholder">My Projects Page</div>} />
+          <Route path="/projects" element={<div className="placeholder">Projects Page</div>} />
           <Route path="/findDevelopers" element={<div className="placeholder">Find Developers Page</div>} />
           <Route path="/findClients" element={<div className="placeholder">Find Clients Page</div>} />
-          
-          {/* Messaging - Client Interface */}
-          <Route path="/messages" element={<MessagingPage />} />
-          
-          {/* Payment Routes */}
+          <Route path="/messages" element={<MessagingPage userRole={userRole} />} />
           <Route path="/client-payments" element={<ClientPayment />} />
-          <Route path="/payments" element={<ClientPayment />} />
+          <Route path="/payments" element={paymentElement} />
+          <Route path="/payment" element={paymentElement} />
           <Route path="/payments/client" element={<ClientPayment />} />
-          <Route path="/payments/developer" element={<DeveloperPayment />} /> 
-          
+          <Route path="/payments/developer" element={<DeveloperPayment />} />
           <Route path="/settings" element={<div className="placeholder">Settings Page</div>} />
-        </Routes>
-      </Layout>
-    </Router>
+        </Route>
+      </Route>
+    </Routes>
   );
 }
 

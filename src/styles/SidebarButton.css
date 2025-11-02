@@ -1,5 +1,8 @@
 .sidebar-button-container {
-	width: 200px;
+	width: 100%;
+	height: 50px;
+	cursor: pointer;
+	margin-top: 35px;
 }
 
 .sidebar-button {
@@ -24,8 +27,8 @@
 }
 
 .sidebar-button img {
-	width: 24px;
-	height: 24px;
+	width: 30px;
+	height: 30px;
 	object-fit: contain;
 }
 
