@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import '../styles/HomePage.css';
 
-export default function HomePage() {
+export default function HomePage({ onSigninClick, onSignupClick, onForgotPasswordClick }) {
   const [openIndex, setOpenIndex] = useState(0);
+  const [testimonialPage, setTestimonialPage] = useState(0);
 
   // Subtle parallax refs
   const heroParallaxRef = useRef(null);
@@ -59,6 +59,72 @@ export default function HomePage() {
     { key: 'hashing', title: 'Hashing', desc: 'Integrity checks for shared files and deliverables.', theme: 'dark' },
   ];
 
+  const testimonials = [
+    {
+      quote: 'We have been working with DevConnect for the past year. The milestone tracking and secure payment flow made delivery stress-free.',
+      name: 'Aiden Smith',
+      role: 'Marketing Manager at XYZ Corp',
+    },
+    {
+      quote: 'Mock-up bidding helped us choose a developer who really understood our brand. Super smooth collaboration.',
+      name: 'Jane Doe',
+      role: 'Product Lead at Alpha Labs',
+    },
+    {
+      quote: 'The integrated chats and progress updates removed ambiguity. We shipped earlier than planned.',
+      name: 'Michael Brown',
+      role: 'CTO at ReadSync',
+    },
+    {
+      quote: 'DevConnect let us move from idea to MVP in weeks, not months. The developer vetting saved our team countless hours.',
+      name: 'Priya Patel',
+      role: 'Founder at LaunchLight',
+    },
+    {
+      quote: 'Milestones and escrow gave our board confidence. Communication was clear, and deliverables were exactly what we needed.',
+      name: 'Carlos Ramirez',
+      role: 'COO at BrightWave Logistics',
+    },
+    {
+      quote: 'Our remote collaboration felt in-office. Integrated chat threads and file sharing kept everyone aligned.',
+      name: 'Lena Fischer',
+      role: 'Product Manager at Skyline Fintech',
+    },
+    {
+      quote: 'The team matched us with specialists for each milestone. Results were polished, and QA passed first try.',
+      name: 'Omar Khalid',
+      role: 'CTO at Horizon Health',
+    },
+    {
+      quote: 'DevConnect’s dashboards made stakeholder updates painless. We always knew what was shipping next.',
+      name: 'Emily Chen',
+      role: 'Program Director at Northstar Media',
+    },
+  ];
+
+  const TESTIMONIALS_PER_PAGE = 3;
+  const totalTestimonialPages = Math.ceil(testimonials.length / TESTIMONIALS_PER_PAGE);
+  const testimonialPageStart = testimonialPage * TESTIMONIALS_PER_PAGE;
+  const visibleTestimonials = testimonials.slice(
+    testimonialPageStart,
+    testimonialPageStart + TESTIMONIALS_PER_PAGE
+  );
+
+  const goToTestimonialPage = (index) => {
+    if (!totalTestimonialPages) return;
+    const normalized = (index + totalTestimonialPages) % totalTestimonialPages;
+    setTestimonialPage(normalized);
+  };
+
+  const handlePrevTestimonials = () => goToTestimonialPage(testimonialPage - 1);
+  const handleNextTestimonials = () => goToTestimonialPage(testimonialPage + 1);
+
+  useEffect(() => {
+    if (testimonialPage >= totalTestimonialPages && totalTestimonialPages > 0) {
+      setTestimonialPage(0);
+    }
+  }, [testimonialPage, totalTestimonialPages]);
+
   // Map service key -> illustration filename in public/illustrations
   const illustrationMap = {
     milestone: 'milestonetracker.png',
@@ -94,11 +160,37 @@ export default function HomePage() {
               Connect with skilled developers who bring your ideas to life. Post your project, set a budget,
               and watch your dreams become a reality.
             </p>
+            <p className="subtitle" style={{ marginTop: '1rem', fontSize: '1.1em', color: '#7b81b0' }}>
+              Whether you need a web app, mobile solution, or custom software, DevConnect matches you with 
+              vetted professionals ready to transform your concept into a polished product. Start collaborating 
+              today and turn innovation into impact.
+            </p>
 
             <div className="hero-cta">
-              <Link to="/continue" className="btn btn-primary">Get Started</Link>
-              <a href="#process" className="btn btn-secondary">Learn more</a>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => {
+                  if (onSignupClick) {
+                    onSignupClick();
+                  } else {
+                    window.location.href = '/continue';
+                  }
+                }}
+              >
+                Get Started
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => {
+                  document.getElementById('process')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
+                Learn more
+              </button>
             </div>
+            
 
             {/* Brand row under CTA – moving marquee with spacing */}
             <div className="brand-marquee hero-inline" aria-label="Trusted by">
@@ -194,7 +286,19 @@ export default function HomePage() {
               Submit your project idea. We will recommend a path, match you with developers,
               and help you launch faster.
             </p>
-            <Link to="/continue" className="btn btn-primary">Get your free proposal</Link>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => {
+                if (onSignupClick) {
+                  onSignupClick();
+                } else {
+                  window.location.href = '/continue';
+                }
+              }}
+            >
+              Get your free proposal
+            </button>
           </div>
 
           <div className="cta-illustration" aria-hidden="true" ref={ctaParallaxRef}>
@@ -250,47 +354,48 @@ export default function HomePage() {
           </div>
 
           <div className="t-cards">
-            <article className="t-card">
-              <p className="quote">
-                "We have been working with DevConnect for the past year. The milestone tracking and secure payment flow made delivery stress-free."
-              </p>
-              <div className="author">
-                <span className="name">Aiden Smith</span>
-                <span className="role">Marketing Manager at XYZ Corp</span>
-              </div>
-            </article>
-
-            <article className="t-card">
-              <p className="quote">
-                "Mock-up bidding helped us choose a developer who really understood our brand. Super smooth collaboration."
-              </p>
-              <div className="author">
-                <span className="name">Jane Doe</span>
-                <span className="role">Product Lead at Alpha Labs</span>
-              </div>
-            </article>
-
-            <article className="t-card">
-              <p className="quote">
-                "The integrated chats and progress updates removed ambiguity. We shipped earlier than planned."
-              </p>
-              <div className="author">
-                <span className="name">Michael Brown</span>
-                <span className="role">CTO at ReadSync</span>
-              </div>
-            </article>
+            {visibleTestimonials.map((testimonial) => (
+              <article className="t-card" key={testimonial.name}>
+                <p className="quote">"{testimonial.quote}"</p>
+                <div className="author">
+                  <span className="name">{testimonial.name}</span>
+                  <span className="role">{testimonial.role}</span>
+                </div>
+              </article>
+            ))}
           </div>
 
-          <div className="t-nav" aria-hidden="true">
-            <button type="button" className="nav prev" aria-label="Previous">{'<'}</button>
-            <div className="dots">
-              <span className="dot active"></span>
-              <span className="dot"></span>
-              <span className="dot"></span>
-              <span className="dot"></span>
-              <span className="dot"></span>
+          <div className="t-nav" aria-hidden={totalTestimonialPages <= 1}>
+            <button
+              type="button"
+              className="nav prev"
+              aria-label="Previous testimonials"
+              onClick={handlePrevTestimonials}
+              disabled={totalTestimonialPages <= 1}
+            >
+              {'<'}
+            </button>
+            <div className="dots" role="tablist" aria-label="Testimonial pages">
+              {Array.from({ length: totalTestimonialPages }).map((_, idx) => (
+                <button
+                  key={`testimonial-dot-${idx}`}
+                  type="button"
+                  className={`dot ${idx === testimonialPage ? 'active' : ''}`}
+                  aria-label={`Go to testimonial set ${idx + 1}`}
+                  aria-pressed={idx === testimonialPage}
+                  onClick={() => goToTestimonialPage(idx)}
+                ></button>
+              ))}
             </div>
-            <button type="button" className="nav next" aria-label="Next">{'>'}</button>
+            <button
+              type="button"
+              className="nav next"
+              aria-label="Next testimonials"
+              onClick={handleNextTestimonials}
+              disabled={totalTestimonialPages <= 1}
+            >
+              {'>'}
+            </button>
           </div>
         </div>
       </section>

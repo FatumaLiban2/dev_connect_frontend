@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
@@ -7,24 +7,19 @@ import ClientPayment from './pages/ClientPayment';
 import DeveloperPayment from './pages/DeveloperPayment';
 import MessagingPage from './pages/MessagingPage';
 import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import SignUpPage from './pages/SignUpPage';
-import MyProjects from './pages/MyProjectClient';
-import ResetPasswordPage from './pages/ResetPasswordPage';
-import ForgotpasswordPage from './pages/ForgotPasswordPage';
-import FindDevelopers from './pages/FindDevelopers';
+import LoginModal from './components/Login';
+import SignupModal from './components/Signup';
+import ForgotPasswordModal from './components/ForgotPassword';
+import ResetPasswordModal from './components/ResetPassword';
 import './App.css';
-import RoleSelectionPage from './pages/RoleSelectionPage';
 
 // Layout wrapper to conditionally show Navbar/Footer
 function Layout({ children, onSigninClick, onSignupClick }) {
   const location = useLocation();
-  const hideNavAndFooter = ['/messages'].some(path => 
-    location.pathname.startsWith(path)
-  );
+  const hideNavAndFooter = location.pathname.startsWith('/messages');
 
   // Show global sidebar on dashboard-like routes
-  const sidebarRoutes = [
+  const sidebarRoutes = new Set([
     '/dashboard',
     '/profile',
     '/myProjects',
@@ -33,80 +28,75 @@ function Layout({ children, onSigninClick, onSignupClick }) {
     '/settings',
     '/payments',
     '/client-payments',
-  ];
-  const showSidebar = sidebarRoutes.some(path => location.pathname.startsWith(path));
-
-  if (hideNavAndFooter) {
-    return <>{children}</>;
-  }
+  ]);
+  const showSidebar = sidebarRoutes.has(location.pathname);
+  const appClassName = hideNavAndFooter ? 'app no-navbar' : 'app with-navbar';
 
   return (
-    <div className="app">
-      <Navbar onSigninClick={onSigninClick} onSignupClick={onSignupClick} />
+    <div className={appClassName}>
+      {!hideNavAndFooter && (
+        <Navbar onSigninClick={onSigninClick} onSignupClick={onSignupClick} />
+      )}
       <div className="app-body">
         {showSidebar && <Sidebar />}
         <main className="main-content">
           {children}
         </main>
       </div>
-      <Footer />
+      {!hideNavAndFooter && <Footer />}
     </div>
   );
 }
 
 function App() {
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
-  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] = useState(false);
+  const [activeAuthModal, setActiveAuthModal] = useState(null);
 
   const handleSigninClick = () => {
-    setIsLoginModalOpen(true);
-    setIsSignupModalOpen(false);
-    setIsResetPasswordModalOpen(false);
+    setActiveAuthModal('login');
   };
 
   const handleSignupClick = () => {
-    setIsSignupModalOpen(true);
-    setIsLoginModalOpen(false);
-    setIsResetPasswordModalOpen(false);
+    setActiveAuthModal('signup');
   };
 
-  const closeLoginModal = () => {
-    setIsLoginModalOpen(false);
-  };
-
-  const closeSignupModal = () => {
-    setIsSignupModalOpen(false);
-  };
-
-  const closeResetPasswordModal = () => {
-    setIsResetPasswordModalOpen(false);
+  const closeAllAuthModals = () => {
+    setActiveAuthModal(null);
   };
 
   const switchToSignup = () => {
-    setIsLoginModalOpen(false);
-    setIsSignupModalOpen(true);
-    setIsResetPasswordModalOpen(false);
+    setActiveAuthModal('signup');
   };
 
   const switchToSignin = () => {
-    setIsSignupModalOpen(false);
-    setIsResetPasswordModalOpen(false);
-    setIsLoginModalOpen(true);
+    setActiveAuthModal('login');
+  };
+
+  const switchToForgotPassword = () => {
+    setActiveAuthModal('forgot');
   };
 
   const switchToResetPassword = () => {
-    setIsLoginModalOpen(false);
-    setIsSignupModalOpen(false);
-    setIsResetPasswordModalOpen(true);
+    setActiveAuthModal('reset');
   };
 
+  const userRole = 'client';
+  const paymentElement = userRole === 'client' ? <ClientPayment /> : <DeveloperPayment />;
+
   return (
-    <Router>
+    <>
       <Layout onSigninClick={handleSigninClick} onSignupClick={handleSignupClick}>
         <Routes>
           {/* Main Pages */}
-          <Route path="/" element={<HomePage />} />
+          <Route
+            path="/"
+            element={(
+              <HomePage
+                onSigninClick={handleSigninClick}
+                onSignupClick={handleSignupClick}
+                onForgotPasswordClick={switchToForgotPassword}
+              />
+            )}
+          />
           <Route path="/features" element={<div className="placeholder">Features Page</div>} />
           <Route path="/about" element={<div className="placeholder">About Page</div>} />
           <Route path="/contact" element={<div className="placeholder">Contact Page</div>} />
@@ -117,7 +107,6 @@ function App() {
           <Route path="/privacy" element={<div className="placeholder">Privacy Policy Page</div>} />
 
         {/* Routes that render with the sidebar layout */}
-        <Route element={<SidebarLayout role={userRole} />}>
           <Route path="/dashboard" element={<div className="placeholder">Dashboard Page</div>} />
           <Route path="/profile" element={<div className="placeholder">Profile Page</div>} />
           <Route path="/projects" element={<div className="placeholder">Projects Page</div>} />
@@ -130,27 +119,37 @@ function App() {
           <Route path="/payments/client" element={<ClientPayment />} />
           <Route path="/payments/developer" element={<DeveloperPayment />} />
           <Route path="/settings" element={<div className="placeholder">Settings Page</div>} />
+          <Route
+            path="*"
+            element={<div className="placeholder">Page not found</div>}
+          />
         </Routes>
       </Layout>
-      
+
       {/* Modal Components */}
-      <LoginPage 
-        isOpen={isLoginModalOpen}
-        onClose={closeLoginModal}
+      <LoginModal
+        isOpen={activeAuthModal === 'login'}
+        onClose={closeAllAuthModals}
         onSwitchToSignup={switchToSignup}
-        onSwitchToForgotPassword={switchToResetPassword}
+        onSwitchToForgotPassword={switchToForgotPassword}
+        onSwitchToResetPassword={switchToResetPassword}
       />
-      <SignUpPage 
-        isOpen={isSignupModalOpen}
-        onClose={closeSignupModal}
+      <SignupModal
+        isOpen={activeAuthModal === 'signup'}
+        onClose={closeAllAuthModals}
         onSwitchToSignin={switchToSignin}
       />
-      <ResetPasswordPage 
-        isOpen={isResetPasswordModalOpen}
-        onClose={closeResetPasswordModal}
+      <ForgotPasswordModal
+        isOpen={activeAuthModal === 'forgot'}
+        onClose={closeAllAuthModals}
         onSwitchToSignin={switchToSignin}
       />
-    </Router>
+      <ResetPasswordModal
+        isOpen={activeAuthModal === 'reset'}
+        onClose={closeAllAuthModals}
+        onSwitchToSignin={switchToSignin}
+      />
+    </>
   );
 }
 

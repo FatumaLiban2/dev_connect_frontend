@@ -24,11 +24,6 @@ const Navbar = ({ onSigninClick, onSignupClick }) => {
             </Link>
           </li>
           <li className="nav-item">
-            <Link to="/myProjects" className="nav-link">
-              My Projects
-            </Link>
-          </li>
-          <li className="nav-item">
             <Link to="/about" className="nav-link">
               About us
             </Link>
