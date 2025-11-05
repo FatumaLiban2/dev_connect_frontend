@@ -4,10 +4,12 @@ import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 import App from './App.jsx';
 
+import MessagingPage from './pages/MessagingPage.jsx';
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <MessagingPage />
     </BrowserRouter>
   </StrictMode>,
 );
