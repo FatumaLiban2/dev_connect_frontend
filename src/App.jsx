@@ -17,7 +17,7 @@ import FindClients from './pages/FindClients';
 import './App.css';
 
 // Layout wrapper to conditionally show Navbar/Footer
-function Layout({ children, onSigninClick, onSignupClick }) {
+function Layout({ children, onSigninClick, onSignupClick, userRole }) {
   const location = useLocation();
   const hideNavAndFooter = location.pathname.startsWith('/messages');
 
@@ -26,10 +26,12 @@ function Layout({ children, onSigninClick, onSignupClick }) {
     '/dashboard',
     '/profile',
     '/projects',
+    '/myProjects',
     '/findDevelopers',
     '/findClients',
     '/settings',
     '/payments',
+    '/payment',
     '/client-payments',
   ]);
   const showSidebar = sidebarRoutes.has(location.pathname);
@@ -87,7 +89,7 @@ function App() {
 
   return (
     <>
-      <Layout onSigninClick={handleSigninClick} onSignupClick={handleSignupClick}>
+      <Layout onSigninClick={handleSigninClick} onSignupClick={handleSignupClick} userRole={userRole}>
         <Routes>
           {/* Main Pages */}
           <Route
@@ -112,6 +114,7 @@ function App() {
         {/* Routes that render with the sidebar layout */}
           <Route path="/dashboard" element={<div className="placeholder">Dashboard Page</div>} />
           <Route path="/profile" element={<div className="placeholder">Profile Page</div>} />
+          <Route path="/projects" element={<MyProjects />} />
           <Route path="/myProjects" element={<MyProjects />} />
           <Route path="/findDevelopers" element={<FindDevelopers />} />
           <Route path="/findClients" element={<FindClients />} />
