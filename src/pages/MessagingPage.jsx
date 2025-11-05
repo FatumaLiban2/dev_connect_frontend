@@ -3,17 +3,13 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import ChatList from '../components/Chat/ChatList';
 import { ChatProvider } from '../context/ChatContext';
 import ChatContainer from '../components/Chat/ChatContainer';
+import Sidebar from '../components/Sidebar';
 import '../styles/MessagingLayout.css';
 
-const MessagingPage = () => {
+const MessagingPage = ({ userRole = 'client' }) => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  
-  // TODO: Get user role from auth context when authentication is ready
-  // Example: const { user } = useAuth(); const userRole = user.role;
-  // For now, you can manually test by changing between 'client' and 'developer'
-  const userRole = 'client'; // Will be: user.role from auth context
 
   // Auto-select chat if userId is in URL (e.g., /messages?userId=user2)
   useEffect(() => {
@@ -38,7 +34,9 @@ const MessagingPage = () => {
   };
 
   return (
-    <div className="messaging-layout">
+    <div className="messaging-page-wrapper">
+      <Sidebar role={userRole} />
+      <div className="messaging-layout">
       {/* Back Button */}
       <button className="messaging-back-button" onClick={handleBackClick}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -97,6 +95,7 @@ const MessagingPage = () => {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 };

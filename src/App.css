@@ -2,12 +2,23 @@
   width: 100%;
   margin: 0;
   padding: 0;
+:root {
+  --nav-height: 84px;
+}
 }
 
 .app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+.app.with-navbar {
+  padding-top: var(--nav-height);
+}
+
+.app.no-navbar {
+  padding-top: 0;
 }
 
 .main-content {
@@ -64,4 +75,16 @@
 
 .read-the-docs {
   color: #888;
+}
+
+@media (max-width: 968px) {
+  :root {
+    --nav-height: 120px;
+  }
+}
+
+@media (max-width: 600px) {
+  :root {
+    --nav-height: 148px;
+  }
 }
