@@ -19,6 +19,11 @@ const Navbar = ({ onSigninClick, onSignupClick }) => {
             </Link>
           </li>
           <li className="nav-item">
+            <Link to="/dashboard" className="nav-link">
+              Dashboard
+            </Link>
+          </li>
+          <li className="nav-item">
             <Link to="/features" className="nav-link">
               Features
             </Link>
