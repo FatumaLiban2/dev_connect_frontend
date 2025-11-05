@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import ChatList from '../components/Chat/ChatList';
 import { ChatProvider } from '../context/ChatContext';
 import ChatContainer from '../components/Chat/ChatContainer';
+import Sidebar from '../components/Sidebar';
 import '../styles/MessagingLayout.css';
 
 const MessagingPage = ({ userRole = 'client' }) => {
@@ -33,7 +34,9 @@ const MessagingPage = ({ userRole = 'client' }) => {
   };
 
   return (
-    <div className="messaging-layout">
+    <div className="messaging-page-wrapper">
+      <Sidebar role={userRole} />
+      <div className="messaging-layout">
       {/* Back Button */}
       <button className="messaging-back-button" onClick={handleBackClick}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -92,6 +95,7 @@ const MessagingPage = ({ userRole = 'client' }) => {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 };

@@ -22,7 +22,7 @@ function Layout({ children, onSigninClick, onSignupClick }) {
   const sidebarRoutes = new Set([
     '/dashboard',
     '/profile',
-    '/myProjects',
+    '/projects',
     '/findDevelopers',
     '/findClients',
     '/settings',
@@ -38,7 +38,7 @@ function Layout({ children, onSigninClick, onSignupClick }) {
         <Navbar onSigninClick={onSigninClick} onSignupClick={onSignupClick} />
       )}
       <div className="app-body">
-        {showSidebar && <Sidebar />}
+        {showSidebar && <Sidebar role={userRole} />}
         <main className="main-content">
           {children}
         </main>

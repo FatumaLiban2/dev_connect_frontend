@@ -160,7 +160,10 @@ export default function HomePage({ onSigninClick, onSignupClick, onForgotPasswor
               Connect with skilled developers who bring your ideas to life. Post your project, set a budget,
               and watch your dreams become a reality.
             </p>
-            <p className="subtitle" style={{ marginTop: '1rem', fontSize: '1.1em', color: '#7b81b0' }}>
+            <p
+              className="subtitle"
+              style={{ marginTop: '0.9rem', fontSize: '1.12em', color: '#6f75a3' }}
+            >
               Whether you need a web app, mobile solution, or custom software, DevConnect matches you with 
               vetted professionals ready to transform your concept into a polished product. Start collaborating 
               today and turn innovation into impact.
