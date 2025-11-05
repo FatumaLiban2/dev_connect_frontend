@@ -13,13 +13,16 @@ import ForgotPasswordModal from './components/ForgotPassword';
 import ResetPasswordModal from './components/ResetPassword';
 import MyProjects from './pages/MyProjectClient';
 import FindDevelopers from './pages/FindDevelopers';
+import RoleSelectionPage from './pages/RoleSelectionPage';
 import FindClients from './pages/FindClients';
 import './App.css';
 
 // Layout wrapper to conditionally show Navbar/Footer
 function Layout({ children, onSigninClick, onSignupClick, userRole }) {
   const location = useLocation();
-  const hideNavAndFooter = location.pathname.startsWith('/messages');
+  const hideNavAndFooter = ['/messages', '/role-selection'].some(path => 
+    location.pathname.startsWith(path)
+  );
 
   // Show global sidebar on dashboard-like routes
   const sidebarRoutes = new Set([
@@ -102,6 +105,7 @@ function App() {
               />
             )}
           />
+          <Route path="/role-selection" element={<RoleSelectionPage />} />
           <Route path="/features" element={<div className="placeholder">Features Page</div>} />
           <Route path="/about" element={<div className="placeholder">About Page</div>} />
           <Route path="/contact" element={<div className="placeholder">Contact Page</div>} />
