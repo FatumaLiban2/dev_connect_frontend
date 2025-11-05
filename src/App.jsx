@@ -13,15 +13,14 @@ import MyProjects from './pages/MyProjectClient';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import ForgotpasswordPage from './pages/ForgotPasswordPage';
 import FindDevelopers from './pages/FindDevelopers';
-import ContinueAsPage from './pages/ContinueAsPage';
+import RoleSelectionPage from './pages/RoleSelectionPage';
 
 import './App.css';
-import RoleSelectionPage from './pages/RoleSelectionPage';
 
   // Layout wrapper to conditionally show Navbar/Footer
 function Layout({ children, onSigninClick, onSignupClick }) {
   const location = useLocation();
-  const hideNavAndFooter = ['/messages', '/continue-as'].some(path => 
+  const hideNavAndFooter = ['/messages', '/role-selection'].some(path => 
     location.pathname.startsWith(path)
   );  // Show global sidebar on dashboard-like routes
   const sidebarRoutes = [
@@ -107,7 +106,7 @@ function App() {
         <Routes>
           {/* Main Pages */}
           <Route path="/" element={<HomePage />} />
-          <Route path="/continue-as" element={<ContinueAsPage />} />
+          <Route path="/role-selection" element={<RoleSelectionPage />} />
           <Route path="/features" element={<div className="placeholder">Features Page</div>} />
           <Route path="/about" element={<div className="placeholder">About Page</div>} />
           <Route path="/contact" element={<div className="placeholder">Contact Page</div>} />
