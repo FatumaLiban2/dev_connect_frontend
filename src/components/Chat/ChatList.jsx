@@ -1,93 +1,111 @@
-import { useState } from 'react';
+// Updated ChatList component with backend integration
+import { useState, useEffect } from 'react';
+import ApiService from '../../services/ApiService';
 import '../../styles/ChatList.css';
 
-const ChatList = ({ onSelectChat, activeChat, userRole = 'client' }) => {
+const ChatList = ({ onSelectChat, activeChat, currentUserId, userRole = 'client' }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [chats, setChats] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock chat data - will be replaced with real data later
-  // For CLIENT: Shows only developers they've worked with on projects
-  // For DEVELOPER: Shows only clients whose projects they've taken
-  const allChats = [
-    // Developers (shown to clients)
+  // Mock data fallback
+  const mockChats = [
     {
-      id: 'dev1',
-      name: 'Alex Developer',
-      lastMessage: 'That sounds good!',
-      timestamp: '10:56',
-      unread: 2,
-      online: true,
-      avatar: null,
-      type: 'developer',
-      projectId: 'proj1'
+      userId: 2,
+      userName: 'John Developer',
+      userAvatar: null,
+      userRole: 'developer',
+      lastMessage: 'Sounds good! I can start working on it tomorrow.',
+      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+      unreadCount: 2,
+      userStatus: 'online',
+      projectId: 1,
     },
     {
-      id: 'dev2',
-      name: 'Mike Frontend',
-      lastMessage: 'I have experience with React...',
-      timestamp: 'Yesterday',
-      unread: 0,
-      online: false,
-      avatar: null,
-      type: 'developer',
-      projectId: 'proj2'
+      userId: 3,
+      userName: 'Sarah Designer',
+      userAvatar: null,
+      userRole: 'developer',
+      lastMessage: 'I have some design mockups ready for review',
+      timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+      unreadCount: 0,
+      userStatus: 'offline',
+      projectId: 2,
     },
     {
-      id: 'dev3',
-      name: 'Sarah Fullstack',
-      lastMessage: 'I can help with the API integration',
-      timestamp: 'Friday',
-      unread: 0,
-      online: false,
-      avatar: null,
-      type: 'developer',
-      projectId: 'proj3'
-    },
-    // Clients (shown to developers)
-    {
-      id: 'client1',
-      name: 'John Client',
-      lastMessage: 'When can you start the project?',
-      timestamp: '11:30',
-      unread: 1,
-      online: true,
-      avatar: null,
-      type: 'client',
-      projectId: 'proj4'
-    },
-    {
-      id: 'client2',
-      name: 'Emma Business',
-      lastMessage: 'Thanks for the update!',
-      timestamp: 'Yesterday',
-      unread: 0,
-      online: true,
-      avatar: null,
-      type: 'client',
-      projectId: 'proj5'
-    },
-    {
-      id: 'client3',
-      name: 'David Startup',
-      lastMessage: 'Can we discuss the budget?',
-      timestamp: 'Monday',
-      unread: 3,
-      online: false,
-      avatar: null,
-      type: 'client',
-      projectId: 'proj6'
+      userId: 4,
+      userName: 'Mike Frontend',
+      userAvatar: null,
+      userRole: 'developer',
+      lastMessage: 'The responsive design is complete',
+      timestamp: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
+      unreadCount: 1,
+      userStatus: 'away',
+      projectId: 3,
     },
   ];
 
-  // Filter chats based on user role
-  // Client sees only developers, Developer sees only clients
-  const chats = userRole === 'client' 
-    ? allChats.filter(chat => chat.type === 'developer')
-    : allChats.filter(chat => chat.type === 'client');
+  useEffect(() => {
+    loadChats();
+    
+    // Refresh chats every 5 seconds
+    const interval = setInterval(loadChats, 5000);
+    
+    return () => clearInterval(interval);
+  }, [currentUserId]);
+
+  const loadChats = async () => {
+    try {
+      const userChats = await ApiService.getUserChats(currentUserId);
+      setChats(userChats);
+      setLoading(false);
+    } catch (error) {
+      console.error('Failed to load chats:', error);
+      // Use mock data as fallback
+      console.log('Using mock chat data');
+      setChats(mockChats);
+      setLoading(false);
+    }
+  };
 
   const filteredChats = chats.filter(chat =>
-    chat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    chat.lastMessage.toLowerCase().includes(searchQuery.toLowerCase())
+    chat.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (chat.lastMessage && chat.lastMessage.toLowerCase().includes(searchQuery.toLowerCase()))
   );
+
+  const formatTimestamp = (timestamp) => {
+    if (!timestamp) return '';
+    
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffInHours = (now - date) / (1000 * 60 * 60);
+    
+    if (diffInHours < 24) {
+      return date.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+      });
+    } else if (diffInHours < 48) {
+      return 'Yesterday';
+    } else {
+      return date.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric' 
+      });
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="chat-list-panel">
+        <div className="chat-list-header">
+          <h2>Messages</h2>
+        </div>
+        <div className="loading">Loading chats...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="chat-list-panel">
@@ -146,32 +164,32 @@ const ChatList = ({ onSelectChat, activeChat, userRole = 'client' }) => {
         ) : (
           filteredChats.map((chat) => (
             <div
-              key={chat.id}
-              className={`chat-item ${activeChat === chat.id ? 'active' : ''}`}
+              key={chat.userId || chat.id}
+              className={`chat-item ${activeChat === chat.userId ? 'active' : ''}`}
               onClick={() => onSelectChat(chat)}
             >
               <div className="chat-avatar">
-                {chat.avatar ? (
-                  <img src={chat.avatar} alt={chat.name} />
+                {chat.userAvatar ? (
+                  <img src={chat.userAvatar} alt={chat.userName} />
                 ) : (
                   <div className="avatar-placeholder">
-                    {chat.name.charAt(0).toUpperCase()}
+                    {chat.userName.charAt(0).toUpperCase()}
                   </div>
                 )}
-                {chat.online && <span className="online-dot"></span>}
+                {chat.userStatus === 'online' && <span className="online-dot"></span>}
               </div>
               
               <div className="chat-info">
                 <div className="chat-header-row">
-                  <h3 className="chat-name">{chat.name}</h3>
-                  <span className="chat-time">{chat.timestamp}</span>
+                  <h3 className="chat-name">{chat.userName}</h3>
+                  <span className="chat-time">{formatTimestamp(chat.lastMessageTime)}</span>
                 </div>
                 <div className="chat-message-row">
                   <p className="chat-last-message">
-                    {chat.lastMessage}
+                    {chat.lastMessage || 'No messages yet'}
                   </p>
-                  {chat.unread > 0 && (
-                    <span className="unread-badge">{chat.unread}</span>
+                  {chat.unreadCount > 0 && (
+                    <span className="unread-badge">{chat.unreadCount}</span>
                   )}
                 </div>
               </div>
