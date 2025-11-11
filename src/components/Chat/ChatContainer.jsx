@@ -12,8 +12,7 @@ const ChatContainer = () => {
     sendMessage, 
     currentUserId, 
     otherUserStatus,
-    isTyping,
-    isConnected 
+    typing
   } = useChat();
 
   const messagesEndRef = useRef(null);
@@ -23,10 +22,6 @@ const ChatContainer = () => {
   useEffect(() => {
     scrollToBottom(messageContainerRef);
   }, [messages]);
-
-  const handleSendMessage = (text) => {
-    sendMessage(text);
-  };
 
   const groupedMessages = groupMessagesByDate(messages);
 
@@ -38,12 +33,6 @@ const ChatContainer = () => {
       />
 
       <div className="messages-container" ref={messageContainerRef}>
-        {!isConnected && (
-          <div className="connection-status">
-            <p>Connecting...</p>
-          </div>
-        )}
-
         {Object.entries(groupedMessages).map(([date, msgs]) => (
           <div key={date} className="message-group">
             <div className="date-separator">
@@ -59,7 +48,7 @@ const ChatContainer = () => {
           </div>
         ))}
 
-        {isTyping && (
+        {typing && (
           <div className="typing-indicator">
             <div className="typing-bubble">
               <span></span>
@@ -72,7 +61,7 @@ const ChatContainer = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      <MessageInput onSend={handleSendMessage} disabled={!isConnected} />
+      <MessageInput />
     </div>
   );
 };

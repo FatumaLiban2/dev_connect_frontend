@@ -1,127 +1,258 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+// Updated ChatContext.jsx with proper message sending and WebSocket integration
+import { createContext, useContext, useState, useEffect } from 'react';
+import ApiService from '../services/ApiService';
+import WebSocketService from '../services/WebSocketService';
 
 const ChatContext = createContext();
 
 export const useChat = () => {
   const context = useContext(ChatContext);
   if (!context) {
-    throw new Error('useChat must be used within ChatProvider');
+    throw new Error('useChat must be used within a ChatProvider');
   }
   return context;
 };
 
-export const ChatProvider = ({ children }) => {
+export const ChatProvider = ({ children, currentUserId, otherUserId, projectId }) => {
   const [messages, setMessages] = useState([]);
-  const [isConnected, setIsConnected] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const [otherUserStatus, setOtherUserStatus] = useState('online'); // online/offline
-  const currentUserId = 'user1';
-  const otherUserId = 'user2';
+  const [loading, setLoading] = useState(true);
+  const [typing, setTyping] = useState(false);
+  const [otherUserStatus, setOtherUserStatus] = useState('offline');
 
-  // Initialize connection - Will be replaced with real WebSocket
+  // Initialize WebSocket connection when component mounts
   useEffect(() => {
-    // TODO: Connect to real WebSocket service
-    // Example: wsService.connect().then(() => { setIsConnected(true); });
-    
-    setIsConnected(true);
-    loadInitialMessages();
+    if (!currentUserId) return;
 
-    // TODO: Subscribe to WebSocket messages
-    // Example: const unsubscribe = wsService.onMessage((data) => { ... });
+    console.log(`🔌 Connecting to WebSocket for user ${currentUserId}...`);
+    
+    try {
+      WebSocketService.connect(currentUserId);
+      console.log('✅ WebSocket connection initiated');
+    } catch (error) {
+      console.error('❌ Failed to connect to WebSocket:', error);
+    }
 
     return () => {
-      // TODO: Clean up WebSocket connection
-      // Example: wsService.disconnect();
+      console.log('🔌 Disconnecting WebSocket...');
+      WebSocketService.disconnect();
     };
-  }, []);
+  }, [currentUserId]);
 
-  // Load initial mock messages
-  const loadInitialMessages = () => {
-    const initialMessages = [
-      {
-        id: '1',
-        senderId: otherUserId,
-        receiverId: currentUserId,
-        text: "Hey! I saw your project proposal. It looks interesting!",
-        timestamp: new Date(Date.now() - 3600000).toISOString(),
-        status: 'read'
-      },
-      {
-        id: '2',
-        senderId: currentUserId,
-        receiverId: otherUserId,
-        text: "Thanks! I'm looking for a developer to help build it.",
-        timestamp: new Date(Date.now() - 3500000).toISOString(),
-        status: 'read'
-      },
-      {
-        id: '3',
-        senderId: otherUserId,
-        receiverId: currentUserId,
-        text: "I have experience with React and Node.js. What's the timeline?",
-        timestamp: new Date(Date.now() - 3400000).toISOString(),
-        status: 'read'
-      },
-      {
-        id: '4',
-        senderId: currentUserId,
-        receiverId: otherUserId,
-        text: "Looking to get it done in about 6 weeks. Does that work for you?",
-        timestamp: new Date(Date.now() - 3300000).toISOString(),
-        status: 'read'
-      },
-    ];
-    setMessages(initialMessages);
-  };
-
-  // Send a message
-  const sendMessage = useCallback(async (text) => {
-    if (!text.trim()) return;
-
-    const newMessage = {
-      id: Date.now().toString(),
+  // Mock messages for fallback
+  const mockMessages = [
+    {
+      id: 1,
+      senderId: otherUserId,
+      receiverId: currentUserId,
+      text: 'Hi! I saw your project and I\'m interested in working on it.',
+      content: 'Hi! I saw your project and I\'m interested in working on it.',
+      timestamp: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
+      status: 'READ'
+    },
+    {
+      id: 2,
       senderId: currentUserId,
       receiverId: otherUserId,
-      text,
-      timestamp: new Date().toISOString(),
-      status: 'sent'
+      text: 'Great! When can you start?',
+      content: 'Great! When can you start?',
+      timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+      status: 'READ'
+    },
+    {
+      id: 3,
+      senderId: otherUserId,
+      receiverId: currentUserId,
+      text: 'I can start tomorrow. Should we discuss the requirements first?',
+      content: 'I can start tomorrow. Should we discuss the requirements first?',
+      timestamp: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
+      status: 'READ'
+    }
+  ];
+
+  // Load conversation when component mounts or users change
+  useEffect(() => {
+    if (!currentUserId || !otherUserId) {
+      setLoading(false);
+      return;
+    }
+
+    const loadConversation = async () => {
+      try {
+        setLoading(true);
+        console.log(`🔄 Loading conversation between user ${currentUserId} and ${otherUserId}...`);
+        
+        const conversation = await ApiService.getConversation(currentUserId, otherUserId);
+        console.log('✅ Loaded messages from backend:', conversation);
+        
+        setMessages(conversation);
+        
+        // Mark messages as read when opening conversation
+        await ApiService.markMessagesAsRead(currentUserId, otherUserId);
+      } catch (error) {
+        console.error('❌ Failed to load conversation from backend:', error);
+        console.log('📝 Using mock message data instead');
+        
+        // Use mock data as fallback
+        setMessages(mockMessages);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    // TODO: Send message through WebSocket
-    // Example: wsService.sendMessage(newMessage);
-    
-    setMessages(prev => [...prev, newMessage]);
-
-    // TODO: Remove auto-response when backend is ready
-    // This is just for testing the UI
+    loadConversation();
   }, [currentUserId, otherUserId]);
 
-  // Update message status
-  const updateMessageStatus = (messageId, status) => {
-    setMessages(prev => 
-      prev.map(msg => 
-        msg.id === messageId ? { ...msg, status } : msg
-      )
-    );
+  // Subscribe to WebSocket events
+  useEffect(() => {
+    if (!currentUserId || !otherUserId) return;
+
+    try {
+      // Subscribe to new messages
+      const handleMessage = (message) => {
+        console.log('📨 Received message via WebSocket:', message);
+        
+        // Only add message if it's part of this conversation
+        if ((message.senderId === otherUserId && message.receiverId === currentUserId) ||
+            (message.senderId === currentUserId && message.receiverId === otherUserId)) {
+          
+          console.log('✅ Message is for this conversation, adding to UI');
+          
+          setMessages(prev => {
+            // Avoid duplicates - check if message already exists
+            const exists = prev.some(m => m.id === message.id);
+            if (exists) {
+              console.log('⚠️ Duplicate message, skipping');
+              return prev;
+            }
+            console.log('✨ New message added to chat');
+            return [...prev, message];
+          });
+
+          // Mark as read if we received it
+          if (message.receiverId === currentUserId) {
+            console.log('📖 Marking message as read');
+            ApiService.markMessagesAsRead(currentUserId, otherUserId).catch(err => 
+              console.error('Failed to mark as read:', err)
+            );
+          }
+        } else {
+          console.log('⏭️ Message is for different conversation, ignoring');
+        }
+      };
+
+      // Subscribe to typing indicators
+      const handleTyping = (indicator) => {
+        console.log('⌨️ Typing indicator received:', indicator);
+        if (indicator.senderId === otherUserId && indicator.receiverId === currentUserId) {
+          setTyping(indicator.isTyping);
+          console.log(`${indicator.isTyping ? '✍️ User is typing...' : '✅ User stopped typing'}`);
+          
+          // Auto-clear typing after 3 seconds
+          if (indicator.isTyping) {
+            setTimeout(() => setTyping(false), 3000);
+          }
+        }
+      };
+
+      // Subscribe to user status changes
+      const handleStatus = (status) => {
+        if (status.userId === otherUserId) {
+          setOtherUserStatus(status.status.toLowerCase());
+        }
+      };
+
+      // Subscribe to read receipts
+      const handleRead = (receipt) => {
+        if (receipt.senderId === otherUserId) {
+          // Update message statuses to 'read'
+          setMessages(prev => prev.map(msg => 
+            msg.senderId === currentUserId && msg.receiverId === otherUserId
+              ? { ...msg, status: 'READ' }
+              : msg
+          ));
+        }
+      };
+
+      // Subscribe using the correct WebSocketService API
+      WebSocketService.subscribe('onMessage', handleMessage);
+      WebSocketService.subscribe('onTyping', handleTyping);
+      WebSocketService.subscribe('onUserStatus', handleStatus);
+      WebSocketService.subscribe('onReadReceipt', handleRead);
+
+      // Cleanup subscriptions
+      return () => {
+        WebSocketService.unsubscribe('onMessage', handleMessage);
+        WebSocketService.unsubscribe('onTyping', handleTyping);
+        WebSocketService.unsubscribe('onUserStatus', handleStatus);
+        WebSocketService.unsubscribe('onReadReceipt', handleRead);
+      };
+    } catch (error) {
+      console.error('❌ WebSocket subscription error:', error);
+      // Continue without WebSocket if it fails
+      return () => {}; // Return empty cleanup function
+    }
+  }, [currentUserId, otherUserId]);
+
+  // Send a message
+  const sendMessage = async (content) => {
+    if (!content.trim() || !currentUserId || !otherUserId) {
+      console.error('Cannot send message: missing content or user IDs');
+      return;
+    }
+
+    try {
+      console.log(`📤 Sending message from user ${currentUserId} to user ${otherUserId}:`, content);
+      
+      // Send via API
+      const sentMessage = await ApiService.sendMessage(
+        currentUserId,
+        otherUserId,
+        content.trim(),
+        projectId || 1
+      );
+
+      console.log('✅ Message sent successfully via API:', sentMessage);
+
+      // Optimistically add to UI (WebSocket will also send it, but this makes UI instant)
+      setMessages(prev => {
+        const exists = prev.some(m => m.id === sentMessage.id);
+        if (exists) return prev;
+        return [...prev, sentMessage];
+      });
+
+      return sentMessage;
+    } catch (error) {
+      console.error('❌ Failed to send message:', error);
+      throw error;
+    }
   };
 
-  // Mark message as read
-  const markAsRead = useCallback((messageId) => {
-    // TODO: Send read receipt through WebSocket
-    // Example: wsService.markAsRead(messageId);
-    updateMessageStatus(messageId, 'read');
-  }, []);
+  // Send typing indicator
+  const sendTypingIndicator = (isTyping) => {
+    if (!currentUserId || !otherUserId) return;
+    
+    try {
+      WebSocketService.sendTypingIndicator(otherUserId, isTyping);
+    } catch (error) {
+      console.error('Failed to send typing indicator:', error);
+    }
+  };
 
   const value = {
     messages,
+    loading,
+    typing,
+    otherUserStatus,
     sendMessage,
-    markAsRead,
-    isConnected,
-    isTyping,
+    sendTypingIndicator,
     currentUserId,
     otherUserId,
-    otherUserStatus,
+    projectId
   };
 
-  return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
+  return (
+    <ChatContext.Provider value={value}>
+      {children}
+    </ChatContext.Provider>
+  );
 };
