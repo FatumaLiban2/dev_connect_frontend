@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/HomePage.css';
 
 export default function HomePage({ onSigninClick, onSignupClick, onForgotPasswordClick }) {
   const [openIndex, setOpenIndex] = useState(0);
   const [testimonialPage, setTestimonialPage] = useState(0);
+  const navigate = useNavigate();
 
   // Subtle parallax refs
   const heroParallaxRef = useRef(null);
@@ -317,7 +319,7 @@ export default function HomePage({ onSigninClick, onSignupClick, onForgotPasswor
       </section>
 
       {/* PROCESS */}
-      <section className="section process" id="process" data-reveal>
+      <section className="section process" id="procedure" data-reveal>
         <div className="container">
           <div className="process-head">
             <span className="badge">Our Working Process</span>

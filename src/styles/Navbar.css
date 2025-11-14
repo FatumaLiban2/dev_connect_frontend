@@ -68,11 +68,16 @@
 
 .nav-link {
   text-decoration: none;
+  background: none;
+  border: none;
   color: #1a1a1a;
   font-size: 1rem;
   font-weight: 500;
   transition: color 0.3s ease;
   position: relative;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
 }
 .nav-link:hover { color: #8b7dd6; }
 
@@ -92,7 +97,58 @@
 .nav-auth {
   margin-left: auto;  /* NEW: pushes auth buttons to the far right */
   display: flex;
+  align-items: center;
   gap: 1rem;
+}
+
+/* User Profile Link */
+.user-profile-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: #1a1a1a;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.user-profile-link:hover {
+  background-color: rgba(139, 125, 214, 0.1);
+  color: #8b7dd6;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8b7dd6 0%, #b8a5ff 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.btn-logout {
+  padding: 0.65rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  border: 2px solid #dc2626;
+  background-color: transparent;
+  color: #dc2626;
+  cursor: pointer;
+}
+
+.btn-logout:hover {
+  background-color: #dc2626;
+  color: white;
 }
 
 .btn-signin,
