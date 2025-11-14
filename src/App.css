@@ -2,15 +2,18 @@
   width: 100%;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+}
+
 :root {
   --nav-height: 84px;
-}
 }
 
 .app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .app.with-navbar {
@@ -24,11 +27,26 @@
 .main-content {
   flex: 1;
   padding: 2rem;
+  min-height: 100vh;
+  overflow-y: auto;
 }
 
 .app-body {
+  position: relative;
+  flex: 1;
   display: flex;
-  align-items: flex-start;
+  flex-direction: row;
+  min-height: calc(100vh - var(--nav-height));
+}
+
+.app.no-navbar .app-body {
+  min-height: 100vh;
+}
+
+.app-body .main-content {
+  margin-left: 280px; /* Match sidebar width */
+  width: calc(100% - 280px);
+  flex: 1;
 }
 
 .placeholder {

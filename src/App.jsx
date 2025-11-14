@@ -7,6 +7,7 @@ import ClientPayment from './pages/ClientPayment';
 import DeveloperPayment from './pages/DeveloperPayment';
 import MessagingPage from './pages/MessagingPage';
 import HomePage from './pages/HomePage';
+import ProfilePage from './pages/ProfilePage';
 import LoginModal from './components/Login';
 import SignupModal from './components/Signup';
 import ForgotPasswordModal from './components/ForgotPassword';
@@ -19,11 +20,11 @@ import WebSocketService from './services/WebSocketService';
 import './App.css';
 
 // Layout wrapper to conditionally show Navbar/Footer
-function Layout({ children, onSigninClick, onSignupClick, userRole }) {
+function Layout({ children, onSigninClick, onSignupClick, currentUser, onLogout, userRole }) {
   const location = useLocation();
-  const hideNavAndFooter = ['/messages', '/role-selection'].some(path => 
-    location.pathname.startsWith(path)
-  );
+  
+  // Only show navbar and footer on the home page
+  const showNavAndFooter = location.pathname === '/';
 
   // Show global sidebar on dashboard-like routes
   const sidebarRoutes = new Set([
@@ -39,12 +40,17 @@ function Layout({ children, onSigninClick, onSignupClick, userRole }) {
     '/client-payments',
   ]);
   const showSidebar = sidebarRoutes.has(location.pathname);
-  const appClassName = hideNavAndFooter ? 'app no-navbar' : 'app with-navbar';
+  const appClassName = showNavAndFooter ? 'app with-navbar' : 'app no-navbar';
 
   return (
     <div className={appClassName}>
-      {!hideNavAndFooter && (
-        <Navbar onSigninClick={onSigninClick} onSignupClick={onSignupClick} />
+      {showNavAndFooter && (
+        <Navbar 
+          onSigninClick={onSigninClick} 
+          onSignupClick={onSignupClick}
+          currentUser={currentUser}
+          onLogout={onLogout}
+        />
       )}
       <div className="app-body">
         {showSidebar && <Sidebar role={userRole} />}
@@ -52,7 +58,7 @@ function Layout({ children, onSigninClick, onSignupClick, userRole }) {
           {children}
         </main>
       </div>
-      {!hideNavAndFooter && <Footer />}
+      {showNavAndFooter && <Footer />}
     </div>
   );
 }
@@ -60,6 +66,7 @@ function Layout({ children, onSigninClick, onSignupClick, userRole }) {
 function App() {
   const [activeAuthModal, setActiveAuthModal] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // TEST USERS - for easy switching between client and developer
   const TEST_USERS = {
@@ -77,13 +84,17 @@ function App() {
     }
   };
 
-  // Initialize WebSocket connection when user logs in
+  // Check if user is logged in from localStorage
   useEffect(() => {
-    // TEMPORARY: For testing, start with client user
-    // Remove this when you have real authentication
-    const mockUser = TEST_USERS.client;
-    setCurrentUser(mockUser);
-    WebSocketService.connect(mockUser.id);
+    const savedUser = localStorage.getItem('devconnect_user');
+    if (savedUser) {
+      const user = JSON.parse(savedUser);
+      setCurrentUser(user);
+      setIsAuthenticated(true);
+      if (user.id) {
+        WebSocketService.connect(user.id);
+      }
+    }
 
     // Cleanup: Disconnect when app unmounts
     return () => {
@@ -91,11 +102,30 @@ function App() {
     };
   }, []);
 
+  // Function to handle successful login (called after role selection)
+  const handleLogin = (user) => {
+    setCurrentUser(user);
+    setIsAuthenticated(true);
+    localStorage.setItem('devconnect_user', JSON.stringify(user));
+    if (user.id) {
+      WebSocketService.connect(user.id);
+    }
+  };
+
+  // Function to handle logout
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setIsAuthenticated(false);
+    localStorage.removeItem('devconnect_user');
+    WebSocketService.disconnect();
+  };
+
   // Function to switch between test users
   const switchTestUser = () => {
     const newUser = currentUser?.id === 1 ? TEST_USERS.developer : TEST_USERS.client;
     WebSocketService.disconnect();
     setCurrentUser(newUser);
+    localStorage.setItem('devconnect_user', JSON.stringify(newUser));
     WebSocketService.connect(newUser.id);
   };
 
@@ -132,34 +162,13 @@ function App() {
 
   return (
     <>
-      {/* TEMPORARY: User Switcher Button for Testing */}
-      {currentUser && (
-        <div 
-          style={{
-            position: 'fixed',
-            top: '10px',
-            right: '10px',
-            zIndex: 9999,
-            background: '#007bff',
-            color: 'white',
-            padding: '10px 15px',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-            fontSize: '14px',
-            fontWeight: 'bold',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }} 
-          onClick={switchTestUser}
-        >
-          <span>🔄</span>
-          <span>Switch to {currentUser.role === 'client' ? 'Developer' : 'Client'}</span>
-        </div>
-      )}
-
-      <Layout onSigninClick={handleSigninClick} onSignupClick={handleSignupClick} userRole={userRole}>
+      <Layout 
+        onSigninClick={handleSigninClick} 
+        onSignupClick={handleSignupClick} 
+        currentUser={currentUser}
+        onLogout={handleLogout}
+        userRole={userRole}
+      >
         <Routes>
           {/* Main Pages */}
           <Route
@@ -172,19 +181,11 @@ function App() {
               />
             )}
           />
-          <Route path="/role-selection" element={<RoleSelectionPage />} />
-          <Route path="/features" element={<div className="placeholder">Features Page</div>} />
-          <Route path="/about" element={<div className="placeholder">About Page</div>} />
-          <Route path="/contact" element={<div className="placeholder">Contact Page</div>} />
-          <Route path="/services" element={<div className="placeholder">Services Page</div>} />
-          <Route path="/use-cases" element={<div className="placeholder">Use Cases Page</div>} />
-          <Route path="/pricing" element={<div className="placeholder">Pricing Page</div>} />
-          <Route path="/blog" element={<div className="placeholder">Blog Page</div>} />
-          <Route path="/privacy" element={<div className="placeholder">Privacy Policy Page</div>} />
+          <Route path="/role-selection" element={<RoleSelectionPage onRoleSelect={handleLogin} />} />
 
           {/* Routes that render with the sidebar layout */}
           <Route path="/dashboard" element={<div className="placeholder">Dashboard Page</div>} />
-          <Route path="/profile" element={<div className="placeholder">Profile Page</div>} />
+          <Route path="/profile" element={<ProfilePage currentUser={currentUser} />} />
           <Route path="/projects" element={<MyProjects />} />
           <Route path="/myProjects" element={<MyProjects />} />
           <Route path="/findDevelopers" element={<FindDevelopers />} />
@@ -192,7 +193,7 @@ function App() {
           
           <Route 
             path="/messages" 
-            element={<MessagingPage userRole={userRole} currentUser={currentUser} />} 
+            element={<MessagingPage userRole={userRole} currentUser={currentUser} onSwitchUser={switchTestUser} />} 
           />
           
           <Route path="/client-payments" element={<ClientPayment />} />

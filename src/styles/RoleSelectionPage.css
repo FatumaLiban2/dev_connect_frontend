@@ -1,169 +1,184 @@
+:root {
+  --role-bg-top: var(--bg, #f6f7ff);
+  --role-bg-bottom: #ffffff;
+  --role-subtle: rgba(125, 122, 255, 0.08);
+  --role-card-shadow: 0 25px 60px rgba(17, 20, 51, 0.12);
+}
+
 .role-selection-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #d4b5c8 0%, #c9a8bc 100%);
-  padding: 2rem;
+  background: radial-gradient(circle at 15% 20%, rgba(125, 122, 255, 0.18), transparent 40%),
+    radial-gradient(circle at 80% 0%, rgba(101, 214, 255, 0.14), transparent 45%),
+    linear-gradient(180deg, var(--role-bg-top) 0%, var(--role-bg-bottom) 100%);
+  padding: clamp(2.5rem, 4vw, 4rem) clamp(1.5rem, 4vw, 3.5rem) clamp(3rem, 6vw, 5rem);
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--text, #111433);
 }
 
 .role-selection-container {
-  max-width: 1200px;
   width: 100%;
+  max-width: 1180px;
 }
 
-.welcome-header {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  padding: 2rem 3rem;
+.header-section {
   text-align: center;
-  margin-bottom: 3rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
 }
 
-.welcome-header h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #2c2c2c;
-  margin: 0 0 0.5rem 0;
+.main-title {
+  font-size: clamp(2.4rem, 4vw, 3.3rem);
+  font-weight: 800;
+  margin: 0 0 0.75rem;
+  letter-spacing: -0.6px;
+  background: linear-gradient(90deg, var(--primary, #7d7aff), #b26bff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.welcome-header p {
-  font-size: 1.1rem;
-  color: #5a5a5a;
+.main-subtitle {
   margin: 0;
+  font-size: 1.1rem;
+  color: var(--muted, #6f75a3);
 }
 
 .role-cards-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.5rem, 3vw, 3rem);
+  justify-items: center;
 }
 
 .role-card {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 30px;
-  padding: 2.5rem;
-  cursor: pointer;
-  transition: all 0.4s ease;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  position: relative;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 36px;
+  padding: clamp(2.75rem, 4vw, 3.75rem) clamp(2.25rem, 3vw, 3rem) clamp(2.75rem, 4vw, 3.75rem);
+  box-shadow: var(--role-card-shadow);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  min-height: 540px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
 .role-card:hover {
-  transform: translateY(-5px) scale(1.05);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px);
+  box-shadow: 0 35px 80px rgba(17, 20, 51, 0.18);
 }
 
 .client-card {
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-  color: white;
+  background: linear-gradient(145deg, var(--primary, #7d7aff) 0%, #a855f7 100%);
+  color: #fff;
+  min-height: 580px;
+  padding-bottom: clamp(3.5rem, 5vw, 4.5rem);
 }
 
 .developer-card {
-  background: rgba(255, 255, 255, 0.95);
-  color: #2c2c2c;
-  border: 2px solid #e5e5e5;
+  background: #fff;
+  color: var(--text, #111433);
 }
 
 .role-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 24px;
   display: flex;
+  align-items: center;
   justify-content: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.8rem;
+  font-size: 2.4rem;
+  background: rgba(255, 255, 255, 0.9);
   color: inherit;
 }
 
-.client-card .role-icon {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.developer-card .role-icon {
-  color: #2c2c2c;
+.client-card .role-icon svg {
+  color: #fff;
 }
 
 .role-card h2 {
-  font-size: 1.8rem;
+  font-size: 1.65rem;
   font-weight: 700;
-  margin: 0 0 1rem 0;
-  text-align: center;
+  margin: 0 0 0.9rem;
 }
 
 .role-description {
-  font-size: 1rem;
-  line-height: 1.6;
-  margin: 0 0 1.5rem 0;
-  text-align: center;
-  opacity: 0.95;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  margin: 0 0 2rem;
+  color: rgba(17, 20, 51, 0.78);
+  max-width: 360px;
+}
+
+.client-card .role-description {
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .role-features {
   list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
   width: 100%;
-  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+  align-items: center;
 }
 
 .role-features li {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
+  width: min(360px, 100%);
   font-size: 1rem;
   line-height: 1.5;
-}
-
-.bullet-icon {
-  font-size: 1.5rem;
-  margin-right: 0.75rem;
-  font-weight: bold;
+  font-weight: 600;
+  text-align: center;
+  padding: 0.85rem 1.5rem;
+  border-radius: 999px;
+  background: var(--role-subtle);
+  color: var(--text, #111433);
 }
 
 .client-card .role-features li {
-  color: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
 }
 
 .developer-card .role-features li {
-  color: #4a4a4a;
+  background: rgba(125, 122, 255, 0.08);
+  color: var(--dark, #161937);
 }
 
 @media (max-width: 900px) {
   .role-cards-container {
     grid-template-columns: 1fr;
   }
-  
-  .welcome-header h1 {
-    font-size: 2rem;
-  }
-  
+
   .role-card {
-    padding: 2rem;
+    max-width: 560px;
+    min-height: auto;
+  }
+
+  .client-card {
+    min-height: auto;
   }
 }
 
 @media (max-width: 600px) {
   .role-selection-page {
-    padding: 1rem;
+    padding: 2.5rem 1.25rem 3.5rem;
   }
-  
-  .welcome-header {
-    padding: 1.5rem;
-    margin-bottom: 2rem;
+
+  .role-card {
+    padding: 2.25rem 1.75rem 2.75rem;
   }
-  
-  .welcome-header h1 {
-    font-size: 1.5rem;
-  }
-  
-  .welcome-header p {
-    font-size: 0.95rem;
-  }
-  
-  .role-card h2 {
-    font-size: 1.5rem;
+
+  .role-icon {
+    width: 70px;
+    height: 70px;
   }
 }

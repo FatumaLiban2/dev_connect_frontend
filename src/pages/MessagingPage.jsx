@@ -8,7 +8,7 @@ import Sidebar from '../components/Sidebar';
 import ApiService from '../services/ApiService'; // ADD THIS
 import '../styles/MessagingLayout.css';
 
-const MessagingPage = ({ userRole = 'client', currentUser }) => {
+const MessagingPage = ({ userRole = 'client', currentUser, onSwitchUser }) => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -64,6 +64,33 @@ const MessagingPage = ({ userRole = 'client', currentUser }) => {
 
   return (
     <div className="messaging-page-wrapper">
+      {/* TEMPORARY: User Switcher Button for Testing - Only on Messages Page */}
+      {currentUser && onSwitchUser && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            zIndex: 9999,
+            background: '#007bff',
+            color: 'white',
+            padding: '10px 15px',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+            fontSize: '14px',
+            fontWeight: 'bold',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }} 
+          onClick={onSwitchUser}
+        >
+          <span>🔄</span>
+          <span>Switch to {currentUser.role === 'client' ? 'Developer' : 'Client'}</span>
+        </div>
+      )}
+
       <Sidebar role={effectiveUser.role} />
       <div className="messaging-layout">
         {/* Back Button */}
