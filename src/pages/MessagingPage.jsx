@@ -4,8 +4,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import ChatList from '../components/Chat/ChatList';
 import { ChatProvider } from '../context/ChatContext';
 import ChatContainer from '../components/Chat/ChatContainer';
-import Sidebar from '../components/Sidebar';
-import ApiService from '../services/ApiService'; // ADD THIS
+import ApiService from '../services/ApiService';
 import '../styles/MessagingLayout.css';
 
 const MessagingPage = ({ userRole = 'client', currentUser, onSwitchUser }) => {
@@ -63,7 +62,7 @@ const MessagingPage = ({ userRole = 'client', currentUser, onSwitchUser }) => {
   };
 
   return (
-    <div className="messaging-page-wrapper">
+    <div>
       {/* TEMPORARY: User Switcher Button for Testing - Only on Messages Page */}
       {currentUser && onSwitchUser && (
         <div 
@@ -91,7 +90,6 @@ const MessagingPage = ({ userRole = 'client', currentUser, onSwitchUser }) => {
         </div>
       )}
 
-      <Sidebar role={effectiveUser.role} />
       <div className="messaging-layout">
         {/* Back Button */}
         <button className="messaging-back-button" onClick={handleBackClick}>
