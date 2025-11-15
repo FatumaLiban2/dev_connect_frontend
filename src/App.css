@@ -31,6 +31,20 @@
   overflow-y: auto;
 }
 
+/* Remove gutter between sidebar and content when sidebar is present */
+.with-sidebar .main-content {
+  /* Default desktop width when sidebar expanded */
+  margin-left: 280px;
+  padding-left: 12px; /* subtle breathing room from the sidebar */
+}
+
+/* When the sidebar is collapsed (88px), reduce the offset accordingly */
+.app-body.with-sidebar:has(.sidebar-container.collapsed) .main-content {
+  margin-left: 88px;
+  padding-left: 12px; /* keep the same gap when collapsed */
+}
+
+
 .app-body {
   position: relative;
   flex: 1;
@@ -39,13 +53,35 @@
   min-height: calc(100vh - var(--nav-height));
 }
 
+/* Paint a background column behind the fixed sidebar so long pages don't show a gap underneath */
+.app-body.with-sidebar::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100vh;
+  background: linear-gradient(0deg, rgba(87, 137, 255, 1) 0%, rgba(173, 149, 232, 1) 100%, rgba(80, 80, 128, 1) 59%);
+  z-index: 100; /* below the real sidebar (z-index: 140) */
+  pointer-events: none;
+}
+
+/* Narrow the background strip when the sidebar is collapsed */
+.app-body.with-sidebar:has(.sidebar-container.collapsed)::before {
+  width: 88px;
+}
+
+/* On mobile, the sidebar overlays content; don't offset or paint the strip */
+@media (max-width: 1024px) {
+  .with-sidebar .main-content { margin-left: 0 !important; padding-left: 0 !important; }
+  .app-body.with-sidebar::before { display: none; }
+}
+
 .app.no-navbar .app-body {
   min-height: 100vh;
 }
 
 .app-body .main-content {
-  margin-left: 280px; /* Match sidebar width */
-  width: calc(100% - 280px);
   flex: 1;
 }
 

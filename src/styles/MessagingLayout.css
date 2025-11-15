@@ -1,9 +1,4 @@
-/* Wrapper to hold sidebar and messaging layout side by side */
-.messaging-page-wrapper {
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
-}
+/* Messaging is rendered inside the app's main-content which already accounts for the fixed sidebar */
 
 /* Messaging Layout - 3 Panel Design with Sidebar */
 .messaging-layout {
@@ -17,12 +12,7 @@
 }
 
 /* Adjust for collapsed sidebar on desktop */
-@media (min-width: 1025px) {
-  .sidebar-container.collapsed ~ * .messaging-layout,
-  body:has(.sidebar-container.collapsed) .messaging-layout {
-    margin-left: 0;
-  }
-}
+/* No special adjustments needed for collapsed sidebar; main layout handles spacing */
 
 /* Mobile layout */
 @media (max-width: 1024px) {

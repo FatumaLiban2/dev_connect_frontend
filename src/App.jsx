@@ -16,6 +16,8 @@ import MyProjects from './pages/MyProjectClient';
 import FindDevelopers from './pages/FindDevelopers';
 import RoleSelectionPage from './pages/RoleSelectionPage';
 import FindClients from './pages/FindClients';
+import DashboardClient from './pages/DashboardClient';
+import DashboardDeveloper from './pages/DashboardDeveloper';
 import WebSocketService from './services/WebSocketService'; 
 import './App.css';
 
@@ -34,6 +36,7 @@ function Layout({ children, onSigninClick, onSignupClick, currentUser, onLogout,
     '/myProjects',
     '/findDevelopers',
     '/findClients',
+    '/messages',
     '/settings',
     '/payments',
     '/payment',
@@ -52,7 +55,7 @@ function Layout({ children, onSigninClick, onSignupClick, currentUser, onLogout,
           onLogout={onLogout}
         />
       )}
-      <div className="app-body">
+      <div className={`app-body${showSidebar ? ' with-sidebar' : ''}`}>
         {showSidebar && <Sidebar role={userRole} />}
         <main className="main-content">
           {children}
@@ -184,7 +187,10 @@ function App() {
           <Route path="/role-selection" element={<RoleSelectionPage onRoleSelect={handleLogin} />} />
 
           {/* Routes that render with the sidebar layout */}
-          <Route path="/dashboard" element={<div className="placeholder">Dashboard Page</div>} />
+          <Route 
+            path="/dashboard" 
+            element={userRole === 'client' ? <DashboardClient /> : <DashboardDeveloper />} 
+          />
           <Route path="/profile" element={<ProfilePage currentUser={currentUser} />} />
           <Route path="/projects" element={<MyProjects />} />
           <Route path="/myProjects" element={<MyProjects />} />

@@ -7,6 +7,11 @@
   padding: 32px;
 }
 
+/* Remove left gutter next to fixed sidebar */
+.with-sidebar .profile-page {
+  padding-left: 0;
+}
+
 .profile-container {
   max-width: 900px;
   margin: 0 auto;
