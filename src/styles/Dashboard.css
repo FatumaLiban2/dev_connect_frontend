@@ -26,6 +26,20 @@
   margin-bottom: 8px;
   color: #333;
 }
+.project-owner {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 8px;
+}
+.project-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+.project-link:hover {
+  transform: translateY(-2px);
+  transition: transform .15s ease;
+}
 .project-progress-bar {
   position: relative;
   height: 14px;

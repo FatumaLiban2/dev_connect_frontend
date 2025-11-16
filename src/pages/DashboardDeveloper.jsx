@@ -1,5 +1,6 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import ProjectDetailsModal from '../components/ProjectDetailsModal';
 import '../styles/Dashboard.css';
 
 const MoneyBarChart = ({ clientMoney, developerMoney }) => {
@@ -81,13 +82,40 @@ export default function DashboardDeveloper() {
     { label: 'Analytics', icon: '�' },
   ];
 
-  // Projects done by developer
+  // Projects done by developer (include ids and clientId to allow linking)
   const projectsDone = [
-    { name: 'Restaurant Website', percent: 100 },
-    { name: 'E-Commerce Platform', percent: 85 },
-    { name: 'Portfolio Site', percent: 60 },
-    { name: 'Booking App', percent: 95 },
+    {
+      id: 'p1',
+      name: 'Restaurant Website',
+      percent: 100,
+      clientId: 'c100',
+      client: 'John Client',
+      description: 'Full website for a local restaurant with menu and reservations.',
+      milestones: [
+        { id: 'm1', title: 'Design', status: 'Done' },
+        { id: 'm2', title: 'Dev', status: 'Done' },
+        { id: 'm3', title: 'Testing', status: 'Done' },
+      ],
+      status: 'Completed',
+    },
+    {
+      id: 'p2',
+      name: 'E-Commerce Platform',
+      percent: 85,
+      clientId: 'c101',
+      client: 'Acme Store',
+      description: 'Shopping platform with payments and admin panel.',
+      milestones: [
+        { id: 'm1', title: 'Scoping', status: 'Done' },
+        { id: 'm2', title: 'Implementation', status: 'In Progress' },
+      ],
+      status: 'In Progress',
+    },
+    { id: 'p3', name: 'Portfolio Site', percent: 60, clientId: 'c102', client: 'Sally Portfolio', description: 'Personal portfolio site.', milestones: [], status: 'In Progress' },
+    { id: 'p4', name: 'Booking App', percent: 95, clientId: 'c103', client: 'TravelCo', description: 'Booking web app for tours.', milestones: [], status: 'Almost Done' },
   ];
+
+  const [selectedProject, setSelectedProject] = useState(null);
 
   return (
     <div className="dashboard-page redesigned">
@@ -128,9 +156,10 @@ export default function DashboardDeveloper() {
       <div className="projects-section">
         <div className="projects-title">Projects Done</div>
         <div className="projects-list">
-          {projectsDone.map((proj, i) => (
-            <div key={i} className="project-item">
+          {projectsDone.map((proj) => (
+            <div key={proj.id} className="project-item project-link" onClick={() => setSelectedProject(proj)} role="button" tabIndex={0}>
               <div className="project-name">{proj.name}</div>
+              <div className="project-owner">{proj.client}</div>
               <div className="project-progress-bar">
                 <div className="project-progress" style={{ width: `${proj.percent}%` }} />
                 <span className="project-percent">{proj.percent}%</span>
@@ -139,6 +168,9 @@ export default function DashboardDeveloper() {
           ))}
         </div>
       </div>
+      {selectedProject && (
+        <ProjectDetailsModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+      )}
     </div>
   );
 }

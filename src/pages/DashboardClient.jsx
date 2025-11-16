@@ -1,5 +1,6 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import ProjectDetailsModal from '../components/ProjectDetailsModal';
 import '../styles/Dashboard.css';
 
 // Simple bar chart for money stats
@@ -82,13 +83,15 @@ export default function DashboardClient() {
     { label: 'Analytics', icon: '�' },
   ];
 
-  // Projects offered by client
+  // Projects offered by client (include ids)
   const projectsOffered = [
-    { name: 'Restaurant Website', percent: 80 },
-    { name: 'E-Commerce Platform', percent: 55 },
-    { name: 'Portfolio Site', percent: 30 },
-    { name: 'Booking App', percent: 90 },
+    { id: 'p1', name: 'Restaurant Website', percent: 80, clientId: 'c100', description: 'Local restaurant site', milestones: [], status: 'In Progress' },
+    { id: 'p2', name: 'E-Commerce Platform', percent: 55, clientId: 'c100', description: 'Online store', milestones: [], status: 'In Progress' },
+    { id: 'p3', name: 'Portfolio Site', percent: 30, clientId: 'c100', description: 'Personal portfolio', milestones: [], status: 'Planning' },
+    { id: 'p4', name: 'Booking App', percent: 90, clientId: 'c100', description: 'Tour booking app', milestones: [], status: 'In Review' },
   ];
+
+  const [selectedProject, setSelectedProject] = useState(null);
 
   return (
     <div className="dashboard-page redesigned">
@@ -129,8 +132,8 @@ export default function DashboardClient() {
       <div className="projects-section">
         <div className="projects-title">Projects Offered</div>
         <div className="projects-list">
-          {projectsOffered.map((proj, i) => (
-            <div key={i} className="project-item">
+          {projectsOffered.map((proj) => (
+            <div key={proj.id} className="project-item project-link" onClick={() => setSelectedProject(proj)} role="button" tabIndex={0}>
               <div className="project-name">{proj.name}</div>
               <div className="project-progress-bar">
                 <div className="project-progress" style={{ width: `${proj.percent}%` }} />
@@ -140,6 +143,9 @@ export default function DashboardClient() {
           ))}
         </div>
       </div>
+      {selectedProject && (
+        <ProjectDetailsModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+      )}
     </div>
   );
 }
