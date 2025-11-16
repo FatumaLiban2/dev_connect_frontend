@@ -18,6 +18,7 @@ import RoleSelectionPage from './pages/RoleSelectionPage';
 import FindClients from './pages/FindClients';
 import DashboardClient from './pages/DashboardClient';
 import DashboardDeveloper from './pages/DashboardDeveloper';
+import ProjectDetails from './pages/ProjectDetails';
 import WebSocketService from './services/WebSocketService'; 
 import './App.css';
 
@@ -194,6 +195,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage currentUser={currentUser} />} />
           <Route path="/projects" element={<MyProjects />} />
           <Route path="/myProjects" element={<MyProjects />} />
+          <Route path="/projects/:projectId" element={<ProjectDetails />} />
           <Route path="/findDevelopers" element={<FindDevelopers />} />
           <Route path="/findClients" element={<FindClients />} />
           

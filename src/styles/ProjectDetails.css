@@ -1,0 +1,115 @@
+.project-details-page {
+  padding: 28px 24px;
+  min-height: 100vh;
+  background: #f7f9fb;
+  color: #222;
+}
+.project-details-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+.project-details-header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+.project-client {
+  font-size: 0.95rem;
+  color: #666;
+}
+.project-details-body {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 20px;
+  align-items: start;
+}
+.project-section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  margin-bottom: 12px;
+}
+.project-section h3 {
+  margin: 0 0 8px 0;
+  font-size: 1rem;
+}
+.project-section p { margin: 0; color: #444; line-height: 1.5 }
+.project-section ul { margin: 8px 0 0 18px; color: #444 }
+
+.project-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+.btn {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+.btn.primary {
+  background: linear-gradient(90deg,#1976d2,#42a5f5);
+  color: white;
+  border: none;
+  box-shadow: 0 6px 18px rgba(66,165,245,0.12);
+}
+
+/* Right column card */
+.project-side-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.project-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.project-meta-label { font-size: 0.85rem; color: #666 }
+.project-meta-value { font-weight: 700; font-size: 1rem }
+
+@media (max-width: 1000px) {
+  .project-details-body { grid-template-columns: 1fr; }
+  .project-details-page { padding: 18px 12px; }
+}
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+.modal-dialog {
+  width: 100%;
+  max-width: 980px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+}
+.modal-close {
+  position: absolute;
+  right: 22px;
+  top: 18px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .modal-dialog { padding: 12px; }
+  .modal-close { right: 12px; top: 10px; }
+}
