@@ -73,8 +73,10 @@ export default function SignupModal({ isOpen, onClose, onSwitchToSignin }) {
 				localStorage.setItem('devconnect_user', JSON.stringify(result.user || result));
 			}
 			
-			alert(`Welcome, ${formData.firstName}! Registration successful as ${role}.`);
+			alert(`Welcome, ${formData.firstName}! Registration successful as ${role}. Please sign in to continue.`);
 			onClose?.();
+			// Redirect to sign in page
+			onSwitchToSignin?.();
 		} catch (error) {
 			console.error("Registration error:", error);
 			const errorMessage = error.message || "Registration failed. Please try again.";

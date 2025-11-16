@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/Authentication.css";
 import authIllustration from "../assets/authlogo.png";
+import { loginUser } from "../API/userAPI";
 
 export default function LoginModal({
 	isOpen,
@@ -9,10 +11,12 @@ export default function LoginModal({
 	onSwitchToForgotPassword,
 	onSwitchToResetPassword,
 }) {
+	const navigate = useNavigate();
 	const [formData, setFormData] = useState({
 		email: "",
 		password: "",
 	});
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		if (!isOpen) {
@@ -32,11 +36,49 @@ export default function LoginModal({
 		}));
 	};
 
-	const handleSubmit = (event) => {
+	const handleSubmit = async (event) => {
 		event.preventDefault();
-		console.log("Signing In with:", formData);
-		alert("Welcome back! Check the console for the submitted data.");
-		onClose?.();
+		setIsLoading(true);
+		
+		try {
+			const credentials = {
+				email: formData.email,
+				password: formData.password,
+			};
+
+			console.log("Signing in with:", credentials);
+			const result = await loginUser(credentials);
+			console.log("Login successful:", result);
+
+			// Store authentication data
+			if (result.accessToken) {
+				localStorage.setItem('devconnect_token', result.accessToken);
+			}
+			if (result.refreshToken) {
+				localStorage.setItem('devconnect_refresh_token', result.refreshToken);
+			}
+			if (result.user) {
+				localStorage.setItem('devconnect_user', JSON.stringify(result.user));
+			}
+
+			alert(`Welcome back, ${result.user?.firstName || 'User'}!`);
+			onClose?.();
+
+			// Redirect based on user role
+			if (result.user?.userRole === 'DEVELOPER') {
+				navigate('/dashboard-developer');
+			} else if (result.user?.userRole === 'CLIENT') {
+				navigate('/dashboard-client');
+			} else {
+				navigate('/');
+			}
+		} catch (error) {
+			console.error("Login error:", error);
+			const errorMessage = error.message || "Login failed. Please check your credentials.";
+			alert(errorMessage);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	return (
@@ -100,8 +142,8 @@ export default function LoginModal({
 										</button>
 									)}
 								</div>
-								<button type="submit" className="auth-submit-btn">
-									SIGN IN
+								<button type="submit" className="auth-submit-btn" disabled={isLoading}>
+									{isLoading ? 'SIGNING IN...' : 'SIGN IN'}
 								</button>
 							</form>
 							<p className="auth-redirect">
