@@ -13,11 +13,13 @@ import SignupModal from './components/Signup';
 import ForgotPasswordModal from './components/ForgotPassword';
 import ResetPasswordModal from './components/ResetPassword';
 import MyProjects from './pages/MyProjectClient';
+import MyProjectsDeveloper from './pages/MyProjectsDeveloper';
 import FindDevelopers from './pages/FindDevelopers';
 import RoleSelectionPage from './pages/RoleSelectionPage';
 import FindClients from './pages/FindClients';
 import DashboardClient from './pages/DashboardClient';
 import DashboardDeveloper from './pages/DashboardDeveloper';
+import Marketplace from './pages/Marketplace';
 import ProjectDetails from './pages/ProjectDetails';
 import WebSocketService from './services/WebSocketService'; 
 import './App.css';
@@ -37,6 +39,8 @@ function Layout({ children, onSigninClick, onSignupClick, currentUser, onLogout,
     '/profile',
     '/projects',
     '/myProjects',
+    '/myProjectsDeveloper',
+    '/marketplace',
     '/findDevelopers',
     '/findClients',
     '/messages',
@@ -120,9 +124,17 @@ function App() {
 
   // Function to handle logout
   const handleLogout = () => {
+    // Clear all authentication data
+    localStorage.removeItem('devconnect_user');
+    localStorage.removeItem('devconnect_token');
+    localStorage.removeItem('token');
+    localStorage.removeItem('devconnect_refresh_token');
+    
+    // Clear state
     setCurrentUser(null);
     setIsAuthenticated(false);
-    localStorage.removeItem('devconnect_user');
+    
+    // Disconnect WebSocket
     WebSocketService.disconnect();
   };
 
@@ -200,7 +212,9 @@ function App() {
           <Route path="/profile" element={<ProfilePage currentUser={currentUser} />} />
           <Route path="/projects" element={<MyProjects />} />
           <Route path="/myProjects" element={<MyProjects />} />
+          <Route path="/myProjectsDeveloper" element={<MyProjectsDeveloper />} />
           <Route path="/projects/:projectId" element={<ProjectDetails />} />
+          <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/findDevelopers" element={<FindDevelopers />} />
           <Route path="/findClients" element={<FindClients />} />
           
