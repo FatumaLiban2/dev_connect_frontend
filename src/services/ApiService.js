@@ -336,6 +336,31 @@ class ApiService {
   }
 
   /**
+   * Claim a project (atomic operation)
+   * @param {number} projectId 
+   * @param {number} devId 
+   */
+  async claimProject(projectId, devId) {
+    const response = await fetch(`${API_BASE_URL}/projects/${projectId}/claim`, {
+      method: 'POST',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify({ devId })
+    });
+    
+    if (response.status === 409) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Project already claimed by another developer');
+    }
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Failed to claim project');
+    }
+    
+    return response.json();
+  }
+
+  /**
    * Upload files for a project (stub - requires backend endpoint)
    * @param {number} projectId 
    * @param {File[]} files 
