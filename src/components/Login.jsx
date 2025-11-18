@@ -50,24 +50,43 @@ export default function LoginModal({
 			const result = await loginUser(credentials);
 			console.log("Login successful:", result);
 
-			// Store authentication data
+			// Store authentication data with consistent keys
 			if (result.accessToken) {
 				localStorage.setItem('devconnect_token', result.accessToken);
+				localStorage.setItem('token', result.accessToken); // Also store as 'token' for backward compatibility
+				console.log('✅ Token stored:', result.accessToken.substring(0, 20) + '...');
+			} else {
+				console.error('❌ No accessToken in response!');
 			}
 			if (result.refreshToken) {
 				localStorage.setItem('devconnect_refresh_token', result.refreshToken);
 			}
 			if (result.user) {
-				localStorage.setItem('devconnect_user', JSON.stringify(result.user));
+				// Ensure user object has 'id' field for projects API
+				const userWithId = {
+					...result.user,
+					id: result.user.userId || result.user.id, // Ensure 'id' exists
+					userId: result.user.userId || result.user.id, // Keep userId too
+					role: result.user.userRole?.toLowerCase() || result.user.role?.toLowerCase() // Normalize role to lowercase
+				};
+				localStorage.setItem('devconnect_user', JSON.stringify(userWithId));
+				console.log('✅ User stored:', userWithId);
 			}
+			
+			// Verify storage
+			console.log('=== Stored Data Verification ===');
+			console.log('token:', localStorage.getItem('token')?.substring(0, 20) + '...');
+			console.log('devconnect_token:', localStorage.getItem('devconnect_token')?.substring(0, 20) + '...');
+			console.log('devconnect_user:', localStorage.getItem('devconnect_user'));
 
 			alert(`Welcome back, ${result.user?.firstName || 'User'}!`);
 			onClose?.();
 
-			// Redirect based on user role
-			if (result.user?.userRole === 'DEVELOPER') {
+			// Redirect based on user role (handle both uppercase and lowercase)
+			const userRole = result.user?.userRole?.toUpperCase() || result.user?.role?.toUpperCase();
+			if (userRole === 'DEVELOPER') {
 				navigate('/dashboard-developer');
-			} else if (result.user?.userRole === 'CLIENT') {
+			} else if (userRole === 'CLIENT') {
 				navigate('/dashboard-client');
 			} else {
 				navigate('/');

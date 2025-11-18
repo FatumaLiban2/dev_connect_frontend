@@ -32,6 +32,8 @@ function Layout({ children, onSigninClick, onSignupClick, currentUser, onLogout,
   // Show global sidebar on dashboard-like routes
   const sidebarRoutes = new Set([
     '/dashboard',
+    '/dashboard-client',
+    '/dashboard-developer',
     '/profile',
     '/projects',
     '/myProjects',
@@ -161,7 +163,7 @@ function App() {
     setActiveAuthModal('reset');
   };
 
-  const userRole = currentUser?.role || 'client';
+  const userRole = currentUser?.role || currentUser?.userRole?.toLowerCase() || 'client';
   const paymentElement = userRole === 'client' ? <ClientPayment /> : <DeveloperPayment />;
 
   return (
@@ -187,11 +189,14 @@ function App() {
           />
           <Route path="/role-selection" element={<RoleSelectionPage onRoleSelect={handleLogin} />} />
 
-          {/* Routes that render with the sidebar layout */}
+          {/* Dashboard Routes */}
           <Route 
             path="/dashboard" 
             element={userRole === 'client' ? <DashboardClient /> : <DashboardDeveloper />} 
           />
+          <Route path="/dashboard-client" element={<DashboardClient />} />
+          <Route path="/dashboard-developer" element={<DashboardDeveloper />} />
+          
           <Route path="/profile" element={<ProfilePage currentUser={currentUser} />} />
           <Route path="/projects" element={<MyProjects />} />
           <Route path="/myProjects" element={<MyProjects />} />
