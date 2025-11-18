@@ -62,13 +62,20 @@ export const registerUser = async (userData) => {
  */
 export const loginUser = async (credentials) => {
 	try {
+		console.log('Attempting login to:', `${BASE_URL}/login`);
+		console.log('With credentials:', { email: credentials.email, password: '***' });
+		
 		const response = await fetch(`${BASE_URL}/login`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 			},
+			credentials: 'include', // Include cookies for CSRF token
 			body: JSON.stringify(credentials),
 		});
+
+		console.log('Response status:', response.status);
+		console.log('Response headers:', Object.fromEntries(response.headers.entries()));
 
 		// Check if response has content
 		const contentType = response.headers.get("content-type");
@@ -76,15 +83,26 @@ export const loginUser = async (credentials) => {
 		
 		if (contentType && contentType.includes("application/json")) {
 			const text = await response.text();
+			console.log('Response text:', text);
 			if (text) {
 				data = JSON.parse(text);
+			}
+		} else {
+			// Try to read as text for error messages
+			const text = await response.text();
+			console.log('Non-JSON response:', text);
+			if (text) {
+				data = { message: text };
 			}
 		}
 
 		if (!response.ok) {
-			throw new Error(data?.message || data?.error || `Login failed with status ${response.status}`);
+			const errorMsg = data?.message || data?.error || data?.status || `Login failed with status ${response.status}`;
+			console.error('Login failed:', errorMsg);
+			throw new Error(errorMsg);
 		}
 
+		console.log('Login successful, data:', data);
 		return data || { success: true };
 	} catch (error) {
 		console.error("Login error:", error);

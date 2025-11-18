@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/Authentication.css";
 import authIllustration from "../assets/authlogo.png";
 import { registerUser } from "../API/userAPI";
 
 export default function SignupModal({ isOpen, onClose, onSwitchToSignin }) {
+	const navigate = useNavigate();
 	const [step, setStep] = useState("signup"); // "signup" or "role"
 	const [formData, setFormData] = useState({
 		firstName: "",
@@ -62,21 +64,37 @@ export default function SignupModal({ isOpen, onClose, onSwitchToSignin }) {
 			const result = await registerUser(registrationData);
 			console.log("Registration successful:", result);
 			
-			// Store user data if returned
+			// Store authentication data with consistent keys
 			if (result.accessToken) {
 				localStorage.setItem('devconnect_token', result.accessToken);
+				localStorage.setItem('token', result.accessToken); // Also store as 'token' for backward compatibility
 			}
 			if (result.refreshToken) {
 				localStorage.setItem('devconnect_refresh_token', result.refreshToken);
 			}
 			if (result.user || result.id) {
-				localStorage.setItem('devconnect_user', JSON.stringify(result.user || result));
+				// Ensure user object has proper structure for projects API
+				const user = result.user || result;
+				const userWithId = {
+					...user,
+					id: user.userId || user.id,
+					userId: user.userId || user.id,
+					userRole: role
+				};
+				localStorage.setItem('devconnect_user', JSON.stringify(userWithId));
 			}
 			
-			alert(`Welcome, ${formData.firstName}! Registration successful as ${role}. Please sign in to continue.`);
+			alert(`Welcome, ${formData.firstName}! Registration successful as ${role === 'CLIENT' ? 'Client' : 'Developer'}.`);
 			onClose?.();
-			// Redirect to sign in page
-			onSwitchToSignin?.();
+			
+			// Navigate to appropriate dashboard based on role
+			if (role === 'DEVELOPER') {
+				navigate('/dashboard-developer');
+			} else if (role === 'CLIENT') {
+				navigate('/dashboard-client');
+			} else {
+				navigate('/');
+			}
 		} catch (error) {
 			console.error("Registration error:", error);
 			const errorMessage = error.message || "Registration failed. Please try again.";
