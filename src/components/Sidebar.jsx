@@ -18,6 +18,7 @@ const navItems = [
     { to: "/dashboard", icon: DashboardIcon, label: "Dashboard" },
     { to: "/projects", icon: ProjectsIcon, label: "Projects", allowedRoles: ["client"] },
     { to: "/myProjectsDeveloper", icon: ProjectsIcon, label: "My Projects", allowedRoles: ["developer"] },
+    { to: "/browse-projects", icon: ProjectsIcon, label: "Browse Projects", allowedRoles: ["developer"] },
     { to: "/marketplace", icon: ProjectsIcon, label: "Marketplace", allowedRoles: ["developer"] },
     { to: "/findClients", icon: FindClientsIcon, label: "Find Clients", allowedRoles: ["developer"] },
     { to: "/findDevelopers", icon: FindDeverlopersIcon, label: "Find Developers", allowedRoles: ["client"] },

@@ -50,36 +50,35 @@ export default function LoginModal({
 			const result = await loginUser(credentials);
 			console.log("Login successful:", result);
 
-			// Store authentication data with consistent keys
-			if (result.accessToken) {
-				localStorage.setItem('devconnect_token', result.accessToken);
-				localStorage.setItem('token', result.accessToken); // Also store as 'token' for backward compatibility
-				console.log('✅ Token stored:', result.accessToken.substring(0, 20) + '...');
-			} else {
-				console.error('❌ No accessToken in response!');
-			}
-			if (result.refreshToken) {
-				localStorage.setItem('devconnect_refresh_token', result.refreshToken);
-			}
-			if (result.user) {
-				// Ensure user object has 'id' field for projects API
-				const userWithId = {
-					...result.user,
-					id: result.user.userId || result.user.id, // Ensure 'id' exists
-					userId: result.user.userId || result.user.id, // Keep userId too
-					role: result.user.userRole?.toLowerCase() || result.user.role?.toLowerCase() // Normalize role to lowercase
-				};
-				localStorage.setItem('devconnect_user', JSON.stringify(userWithId));
-				console.log('✅ User stored:', userWithId);
-			}
-			
-			// Verify storage
-			console.log('=== Stored Data Verification ===');
-			console.log('token:', localStorage.getItem('token')?.substring(0, 20) + '...');
-			console.log('devconnect_token:', localStorage.getItem('devconnect_token')?.substring(0, 20) + '...');
-			console.log('devconnect_user:', localStorage.getItem('devconnect_user'));
-
-			alert(`Welcome back, ${result.user?.firstName || 'User'}!`);
+		// Store authentication data with consistent keys
+		if (result.accessToken) {
+			localStorage.setItem('accessToken', result.accessToken);        // Backend key (primary)
+			localStorage.setItem('devconnect_token', result.accessToken);   // App key
+			localStorage.setItem('token', result.accessToken);              // Backward compatibility
+			console.log('✅ Token stored as accessToken:', result.accessToken.substring(0, 20) + '...');
+		} else {
+			console.error('❌ No accessToken in response!');
+		}
+		if (result.refreshToken) {
+			localStorage.setItem('devconnect_refresh_token', result.refreshToken);
+		}
+		if (result.user) {
+			// Ensure user object has 'id' field for projects API
+			const userWithId = {
+				...result.user,
+				id: result.user.userId || result.user.id, // Ensure 'id' exists
+				userId: result.user.userId || result.user.id, // Keep userId too
+				role: result.user.userRole?.toLowerCase() || result.user.role?.toLowerCase() // Normalize role to lowercase
+			};
+			localStorage.setItem('devconnect_user', JSON.stringify(userWithId));
+			console.log('✅ User stored:', userWithId);
+		}
+		
+		// Verify storage
+		console.log('=== Stored Data Verification ===');
+		console.log('accessToken:', localStorage.getItem('accessToken')?.substring(0, 20) + '...');
+		console.log('devconnect_token:', localStorage.getItem('devconnect_token')?.substring(0, 20) + '...');
+		console.log('devconnect_user:', localStorage.getItem('devconnect_user'));			alert(`Welcome back, ${result.user?.firstName || 'User'}!`);
 			onClose?.();
 
 			// Redirect based on user role (handle both uppercase and lowercase)

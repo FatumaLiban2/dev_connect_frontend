@@ -31,31 +31,53 @@ const MyProjects = () => {
       setLoading(true);
       setError(null);
 
+      console.log('🔍 [MyProjects] Loading client projects...');
+
       // Get current user from localStorage
       const userStr = localStorage.getItem('devconnect_user');
       if (!userStr) {
+        console.error('❌ [MyProjects] No user in localStorage');
         setError('No user logged in. Please login first.');
         setLoading(false);
         return;
       }
 
       const user = JSON.parse(userStr);
+      console.log('👤 [MyProjects] Current user:', {
+        id: user.id,
+        userId: user.userId,
+        email: user.email,
+        role: user.role
+      });
 
       // Fetch projects from backend using clientId
       if (user.id || user.userId) {
         const clientId = user.id || user.userId;
+        console.log(`📡 [MyProjects] Fetching projects for client ID: ${clientId}`);
+        console.log(`📡 [MyProjects] API URL: http://localhost:8081/api/projects/client/${clientId}`);
+        
         const backendProjects = await ApiService.getProjectsByClient(clientId);
+        console.log('✅ [MyProjects] Backend response:', backendProjects);
+        console.log(`✅ [MyProjects] Number of projects: ${backendProjects.length}`);
         
         // Map backend DTOs to frontend shape
         const mappedProjects = backendProjects.map(mapBackendProjectToFrontend);
+        console.log('✅ [MyProjects] Mapped projects:', mappedProjects);
+        
         setProjects(mappedProjects);
+        console.log(`✅ [MyProjects] Projects loaded successfully: ${mappedProjects.length} projects`);
       } else {
+        console.error('❌ [MyProjects] User ID not found in user object:', user);
         setError('User ID not found. Cannot fetch projects.');
       }
 
       setLoading(false);
     } catch (err) {
-      console.error('Failed to load projects:', err);
+      console.error('❌ [MyProjects] Error loading projects:', err);
+      console.error('❌ [MyProjects] Error details:', {
+        message: err.message,
+        stack: err.stack
+      });
       setError(err.message || 'Failed to load projects. Please try again.');
       setLoading(false);
     }

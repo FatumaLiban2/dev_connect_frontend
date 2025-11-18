@@ -86,9 +86,13 @@ const DeveloperPayment = () => {
     setUserId(currentUserId);
 
     try {
+      const token = localStorage.getItem('accessToken') || 
+                    localStorage.getItem('devconnect_token') || 
+                    localStorage.getItem('token');
+      
       const response = await fetch(`/api/developer/earnings/${currentUserId}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });

@@ -1,202 +1,250 @@
-// WebSocket service for real-time messaging
+// WebSocket service for real-time messaging - Backend Integration Ready
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 
 class WebSocketService {
   constructor() {
     this.client = null;
-    this.currentUserId = null;
+    this.subscriptions = new Map();
+    this.userId = null;
     this.isConnected = false;
-    this.subscribers = {
-      onMessage: [],
-      onTyping: [],
-      onUserStatus: [],
-      onReadReceipt: [],
-      onConnect: [],
-      onDisconnect: []
-    };
   }
 
   /**
    * Connect to WebSocket server
-   * @param {number} userId - Current user's ID
+   * @param {number} userId - Current user ID
+   * @returns {Promise<void>}
    */
   connect(userId) {
-    if (this.isConnected) {
-      console.log('Already connected');
-      return;
-    }
+    this.userId = userId;
 
-    this.currentUserId = userId;
-    
-    this.client = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:8081/ws'),
-      reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
-      
-      onConnect: () => {
-        console.log('✅ Connected to WebSocket');
-        this.isConnected = true;
-        
-        // Subscribe to private message queue
-        this.client.subscribe(`/user/queue/messages`, (message) => {
-          const messageData = JSON.parse(message.body);
-          this._notifySubscribers('onMessage', messageData);
-        });
-        
-        // Subscribe to typing indicators
-        this.client.subscribe(`/user/queue/typing`, (message) => {
-          const typingData = JSON.parse(message.body);
-          this._notifySubscribers('onTyping', typingData);
-        });
-        
-        // Subscribe to read receipts
-        this.client.subscribe(`/user/queue/read-receipts`, (message) => {
-          const receiptData = JSON.parse(message.body);
-          this._notifySubscribers('onReadReceipt', receiptData);
-        });
-        
-        // Subscribe to user status updates (public topic)
-        this.client.subscribe('/topic/user-status', (message) => {
-          const statusData = JSON.parse(message.body);
-          this._notifySubscribers('onUserStatus', statusData);
-        });
-        
-        // Update user status to online
-        this.updateUserStatus('ONLINE');
-        
-        // Notify connection subscribers
-        this._notifySubscribers('onConnect');
-      },
-      
-      onDisconnect: () => {
-        console.log('❌ Disconnected from WebSocket');
-        this.isConnected = false;
-        this._notifySubscribers('onDisconnect');
-      },
-      
-      onStompError: (frame) => {
-        console.error('WebSocket error:', frame);
+    return new Promise((resolve, reject) => {
+      // Get JWT token for authentication
+      const token = localStorage.getItem('accessToken') || 
+                    localStorage.getItem('devconnect_token') || 
+                    localStorage.getItem('token');
+
+      if (!token) {
+        console.error('❌ No authentication token found');
+        reject(new Error('No authentication token'));
+        return;
       }
+
+      console.log('🔑 Connecting with authentication token');
+
+      this.client = new Client({
+        webSocketFactory: () => {
+          // Create SockJS connection without token in URL
+          const sockjs = new SockJS('http://localhost:8081/ws');
+          return sockjs;
+        },
+        
+        connectHeaders: {
+          Authorization: `Bearer ${token}`,
+          'X-Authorization': `Bearer ${token}`
+        },
+        
+        debug: (str) => {
+          console.log('[STOMP]', str);
+        },
+        
+        reconnectDelay: 5000,
+        heartbeatIncoming: 4000,
+        heartbeatOutgoing: 4000,
+
+        onConnect: () => {
+          console.log('✅ WebSocket Connected');
+          this.isConnected = true;
+          resolve();
+        },
+
+        onStompError: (frame) => {
+          console.error('❌ STOMP Error:', frame.headers['message']);
+          this.isConnected = false;
+          reject(new Error(frame.headers['message']));
+        },
+
+        onWebSocketError: (error) => {
+          console.error('❌ WebSocket Error:', error);
+          this.isConnected = false;
+          reject(error);
+        },
+
+        onWebSocketClose: () => {
+          console.log('🔌 WebSocket Disconnected');
+          this.isConnected = false;
+        }
+      });
+
+      this.client.activate();
     });
-    
-    this.client.activate();
   }
 
   /**
-   * Send a chat message
-   * @param {number} receiverId 
-   * @param {string} text 
-   * @param {number} projectId 
+   * Subscribe to incoming messages
+   * @param {Function} callback - Message handler
    */
-  sendMessage(receiverId, text, projectId) {
-    if (!this.isConnected || !this.client) {
-      console.error('Not connected to WebSocket');
-      return;
+  subscribeToMessages(callback) {
+    if (!this.client || !this.userId) {
+      throw new Error('WebSocket not connected');
     }
 
+    const subscription = this.client.subscribe(
+      `/user/${this.userId}/queue/messages`,
+      (message) => {
+        try {
+          const data = JSON.parse(message.body);
+          callback(data);
+        } catch (error) {
+          console.error('Error parsing message:', error);
+        }
+      }
+    );
+
+    this.subscriptions.set('messages', subscription);
+  }
+
+  /**
+   * Subscribe to typing indicators
+   * @param {Function} callback - Typing indicator handler
+   */
+  subscribeToTyping(callback) {
+    if (!this.client || !this.userId) {
+      throw new Error('WebSocket not connected');
+    }
+
+    const subscription = this.client.subscribe(
+      `/user/${this.userId}/queue/typing`,
+      (message) => {
+        try {
+          const data = JSON.parse(message.body);
+          callback(data);
+        } catch (error) {
+          console.error('Error parsing typing indicator:', error);
+        }
+      }
+    );
+
+    this.subscriptions.set('typing', subscription);
+  }
+
+  /**
+   * Subscribe to read receipts
+   * @param {Function} callback - Read receipt handler
+   */
+  subscribeToReadReceipts(callback) {
+    if (!this.client || !this.userId) {
+      throw new Error('WebSocket not connected');
+    }
+
+    const subscription = this.client.subscribe(
+      `/user/${this.userId}/queue/read-receipts`,
+      (message) => {
+        try {
+          const data = JSON.parse(message.body);
+          callback(data);
+        } catch (error) {
+          console.error('Error parsing read receipt:', error);
+        }
+      }
+    );
+
+    this.subscriptions.set('read-receipts', subscription);
+  }
+
+  /**
+   * Send a message via WebSocket
+   * @param {number} senderId - Sender user ID
+   * @param {number} receiverId - Receiver user ID
+   * @param {string} text - Message text
+   */
+  sendMessage(senderId, receiverId, text) {
+    if (!this.client || !this.isConnected) {
+      throw new Error('WebSocket not connected');
+    }
+
+    const message = {
+      senderId: senderId,
+      receiverId: receiverId,
+      text: text,
+      timestamp: new Date().toISOString()
+    };
+
     this.client.publish({
-      destination: '/app/chat',
-      body: JSON.stringify({
-        senderId: this.currentUserId,
-        receiverId: receiverId,
-        text: text,
-        projectId: projectId
-      })
+      destination: '/app/chat.sendMessage',
+      body: JSON.stringify(message)
     });
   }
 
   /**
    * Send typing indicator
-   * @param {number} receiverId 
-   * @param {boolean} isTyping 
+   * @param {number} senderId - Sender user ID
+   * @param {number} receiverId - Receiver user ID
+   * @param {boolean} isTyping - Is typing status
    */
-  sendTypingIndicator(receiverId, isTyping) {
-    if (!this.isConnected || !this.client) return;
+  sendTypingIndicator(senderId, receiverId, isTyping) {
+    if (!this.client || !this.isConnected) {
+      return;
+    }
+
+    const indicator = {
+      senderId: senderId,
+      receiverId: receiverId,
+      isTyping: isTyping
+    };
 
     this.client.publish({
       destination: '/app/typing',
-      body: JSON.stringify({
-        senderId: this.currentUserId,
-        receiverId: receiverId,
-        isTyping: isTyping
-      })
+      body: JSON.stringify(indicator)
     });
   }
 
   /**
    * Mark messages as read
-   * @param {number} senderId - ID of the user who sent the messages
+   * @param {number} conversationId - Conversation ID
+   * @param {number} readerId - Reader user ID
    */
-  markMessagesAsRead(senderId) {
-    if (!this.isConnected || !this.client) return;
+  markMessagesAsRead(conversationId, readerId) {
+    if (!this.client || !this.isConnected) {
+      return;
+    }
+
+    const readRequest = {
+      conversationId: conversationId,
+      readerId: readerId
+    };
 
     this.client.publish({
       destination: '/app/messages-read',
-      body: JSON.stringify({
-        senderId: senderId,
-        receiverId: this.currentUserId
-      })
+      body: JSON.stringify(readRequest)
     });
-
-    // Also call REST API to update database
-    fetch(`http://localhost:8081/api/messages/read?senderId=${senderId}&receiverId=${this.currentUserId}`, {
-      method: 'PUT'
-    }).catch(err => console.error('Error marking as read:', err));
-  }
-
-  /**
-   * Update user online/offline status
-   * @param {string} status - 'ONLINE' or 'OFFLINE'
-   */
-  updateUserStatus(status) {
-    if (!this.currentUserId) return;
-
-    fetch(`http://localhost:8081/api/messages/status/${this.currentUserId}?status=${status}`, {
-      method: 'PUT'
-    }).catch(err => console.error('Error updating status:', err));
   }
 
   /**
    * Disconnect from WebSocket
    */
   disconnect() {
+    // Unsubscribe all
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+    this.subscriptions.clear();
+
+    // Deactivate client
     if (this.client) {
-      this.updateUserStatus('OFFLINE');
       this.client.deactivate();
-      this.isConnected = false;
-      this.currentUserId = null;
+      this.client = null;
     }
+
+    this.isConnected = false;
   }
 
   /**
-   * Subscribe to WebSocket events
-   * @param {string} event - Event name: 'onMessage', 'onTyping', 'onUserStatus', 'onConnect', 'onDisconnect'
-   * @param {function} callback 
+   * Check connection status
+   * @returns {boolean}
    */
-  subscribe(event, callback) {
-    if (this.subscribers[event]) {
-      this.subscribers[event].push(callback);
-    }
-  }
-
-  /**
-   * Unsubscribe from WebSocket events
-   */
-  unsubscribe(event, callback) {
-    if (this.subscribers[event]) {
-      this.subscribers[event] = this.subscribers[event].filter(cb => cb !== callback);
-    }
-  }
-
-  /**
-   * Notify all subscribers of an event
-   */
-  _notifySubscribers(event, data) {
-    if (this.subscribers[event]) {
-      this.subscribers[event].forEach(callback => callback(data));
-    }
+  getConnectionStatus() {
+    return this.isConnected;
   }
 }
 

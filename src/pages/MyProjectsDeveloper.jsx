@@ -68,9 +68,30 @@ const MyProjectsDeveloper = () => {
   return (
     <div className="projects-page">
       <div className="projects-header">
-        <h1>My Projects</h1>
-        <p className="subtitle">Track and manage all your claimed projects</p>
+        <h1>My Claimed Projects</h1>
+        <p className="subtitle">Projects you've claimed and are working on</p>
       </div>
+
+      {/* Info Banner */}
+      {!loading && !error && projects.length === 0 && (
+        <div style={{
+          marginBottom: '20px',
+          padding: '12px 16px',
+          background: '#fef3c7',
+          border: '1px solid #fcd34d',
+          borderRadius: '8px',
+          color: '#92400e',
+          fontSize: '14px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}>
+          <span>👋</span>
+          <span>
+            You haven't claimed any projects yet. Go to <strong>"Browse Projects"</strong> to find available projects!
+          </span>
+        </div>
+      )}
 
       {/* Loading State */}
       {loading && (
@@ -141,6 +162,7 @@ const MyProjectsDeveloper = () => {
                 <ProjectCard 
                   key={project.id} 
                   project={project}
+                  showMessageButton={true}
                   onUpdate={loadDeveloperProjects}
                 />
               ))}
