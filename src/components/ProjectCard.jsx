@@ -1,7 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import { formatBudget, formatTimeline } from "../utils/projectMapper";
 import "../styles/ProjectCard.css";
 
-export default function ProjectCard({ project }) {
+export default function ProjectCard({ project, showMessageButton = false }) {
+	const navigate = useNavigate();
+
 	const getStatusBadge = () => {
 		const statusConfig = {
 			available: { label: "Available", className: "status-available" },
@@ -33,6 +36,16 @@ export default function ProjectCard({ project }) {
 	const title = project.title || project.projectName || 'Untitled Project';
 	const budget = formatBudget(project.budget || project.projectBudget);
 	const timeline = formatTimeline(project.timeline);
+
+	const handleMessageClient = () => {
+		// Get client info from project
+		const clientId = project.clientId || project.client?.id;
+		const clientName = project.clientName || project.client?.name || 'Client';
+		
+		if (clientId) {
+			navigate(`/messages?userId=${clientId}&userName=${encodeURIComponent(clientName)}&userRole=CLIENT&projectId=${project.id}`);
+		}
+	};
 
 	return (
 		<div className="project-card">
@@ -66,6 +79,14 @@ export default function ProjectCard({ project }) {
 			{project.files && project.files.length > 0 && (
 				<div className="project-files">
 					<span className="files-label">📎 {project.files.length} file(s) attached</span>
+				</div>
+			)}
+
+			{showMessageButton && (
+				<div className="project-actions">
+					<button className="btn-message-client" onClick={handleMessageClient}>
+						💬 Message Client
+					</button>
 				</div>
 			)}
 		</div>

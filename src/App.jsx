@@ -14,6 +14,7 @@ import ForgotPasswordModal from './components/ForgotPassword';
 import ResetPasswordModal from './components/ResetPassword';
 import MyProjects from './pages/MyProjectClient';
 import MyProjectsDeveloper from './pages/MyProjectsDeveloper';
+import BrowseProjects from './pages/BrowseProjects';
 import FindDevelopers from './pages/FindDevelopers';
 import RoleSelectionPage from './pages/RoleSelectionPage';
 import FindClients from './pages/FindClients';
@@ -40,6 +41,7 @@ function Layout({ children, onSigninClick, onSignupClick, currentUser, onLogout,
     '/projects',
     '/myProjects',
     '/myProjectsDeveloper',
+    '/browse-projects',
     '/marketplace',
     '/findDevelopers',
     '/findClients',
@@ -126,8 +128,9 @@ function App() {
   const handleLogout = () => {
     // Clear all authentication data
     localStorage.removeItem('devconnect_user');
-    localStorage.removeItem('devconnect_token');
-    localStorage.removeItem('token');
+    localStorage.removeItem('accessToken');          // Backend key
+    localStorage.removeItem('devconnect_token');     // App key
+    localStorage.removeItem('token');                // Backward compatibility
     localStorage.removeItem('devconnect_refresh_token');
     
     // Clear state
@@ -213,6 +216,7 @@ function App() {
           <Route path="/projects" element={<MyProjects />} />
           <Route path="/myProjects" element={<MyProjects />} />
           <Route path="/myProjectsDeveloper" element={<MyProjectsDeveloper />} />
+          <Route path="/browse-projects" element={<BrowseProjects />} />
           <Route path="/projects/:projectId" element={<ProjectDetails />} />
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/findDevelopers" element={<FindDevelopers />} />

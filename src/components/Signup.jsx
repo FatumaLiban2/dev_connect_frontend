@@ -51,7 +51,14 @@ export default function SignupModal({ isOpen, onClose, onSwitchToSignin }) {
 
 	const handleRoleSelection = async (role) => {
 		try {
+			// Generate a username for backend if not explicitly collected.
+			// Use firstName + lastName when available, otherwise fall back to email local-part.
+			const generatedUsername = (formData.firstName || formData.lastName)
+				? `${(formData.firstName || '')}.${(formData.lastName || '')}`.toLowerCase().replace(/[^a-z0-9_.-]/g, '')
+				: (formData.email || '').split('@')[0];
+
 			const registrationData = {
+				username: generatedUsername,
 				firstName: formData.firstName,
 				lastName: formData.lastName,
 				email: formData.email,
@@ -64,27 +71,27 @@ export default function SignupModal({ isOpen, onClose, onSwitchToSignin }) {
 			const result = await registerUser(registrationData);
 			console.log("Registration successful:", result);
 			
-			// Store authentication data with consistent keys
-			if (result.accessToken) {
-				localStorage.setItem('devconnect_token', result.accessToken);
-				localStorage.setItem('token', result.accessToken); // Also store as 'token' for backward compatibility
-			}
-			if (result.refreshToken) {
-				localStorage.setItem('devconnect_refresh_token', result.refreshToken);
-			}
-			if (result.user || result.id) {
-				// Ensure user object has proper structure for projects API
-				const user = result.user || result;
-				const userWithId = {
-					...user,
-					id: user.userId || user.id,
-					userId: user.userId || user.id,
-					userRole: role
-				};
-				localStorage.setItem('devconnect_user', JSON.stringify(userWithId));
-			}
-			
-			alert(`Welcome, ${formData.firstName}! Registration successful as ${role === 'CLIENT' ? 'Client' : 'Developer'}.`);
+		// Store authentication data with consistent keys
+		if (result.accessToken) {
+			localStorage.setItem('accessToken', result.accessToken);        // Backend key (primary)
+			localStorage.setItem('devconnect_token', result.accessToken);   // App key
+			localStorage.setItem('token', result.accessToken);              // Backward compatibility
+			console.log('✅ Token stored as accessToken');
+		}
+		if (result.refreshToken) {
+			localStorage.setItem('devconnect_refresh_token', result.refreshToken);
+		}
+		if (result.user || result.id) {
+			// Ensure user object has proper structure for projects API
+			const user = result.user || result;
+			const userWithId = {
+				...user,
+				id: user.userId || user.id,
+				userId: user.userId || user.id,
+				userRole: role
+			};
+			localStorage.setItem('devconnect_user', JSON.stringify(userWithId));
+		}			alert(`Welcome, ${formData.firstName}! Registration successful as ${role === 'CLIENT' ? 'Client' : 'Developer'}.`);
 			onClose?.();
 			
 			// Navigate to appropriate dashboard based on role

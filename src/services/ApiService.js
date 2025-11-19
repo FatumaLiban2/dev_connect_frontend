@@ -10,9 +10,10 @@ class ApiService {
       'Content-Type': 'application/json'
     };
 
-    // Try to get token from localStorage (multiple possible keys)
-    let token = localStorage.getItem('token') || 
-                localStorage.getItem('devconnect_token');
+    // Try to get token from localStorage (check all possible keys)
+    let token = localStorage.getItem('accessToken') ||      // Backend key
+                localStorage.getItem('devconnect_token') ||  // App key
+                localStorage.getItem('token');               // Fallback key
     
     // Fallback: check if token is inside devconnect_user object
     if (!token) {
@@ -20,7 +21,7 @@ class ApiService {
         const userStr = localStorage.getItem('devconnect_user');
         if (userStr) {
           const user = JSON.parse(userStr);
-          token = user.token || user.accessToken;
+          token = user.accessToken || user.token;
         }
       } catch {
         // Ignore parse errors
@@ -32,10 +33,11 @@ class ApiService {
       console.log('✅ Authorization header added:', `Bearer ${token.substring(0, 20)}...`);
     } else {
       console.warn('⚠️ No token found! Authorization header NOT added.');
-      console.log('Storage check:', {
-        token: localStorage.getItem('token'),
+      console.log('📦 Storage check:', {
+        accessToken: localStorage.getItem('accessToken'),
         devconnect_token: localStorage.getItem('devconnect_token'),
-        devconnect_user: localStorage.getItem('devconnect_user')
+        token: localStorage.getItem('token'),
+        user_has_token: !!localStorage.getItem('devconnect_user')
       });
     }
 
@@ -81,7 +83,9 @@ class ApiService {
    * Get user by ID
    */
   async getUser(userId) {
-    const response = await fetch(`${API_BASE_URL}/users/${userId}`);
+    const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+      headers: this.getAuthHeaders()
+    });
     
     if (!response.ok) {
       throw new Error('Failed to fetch user');
@@ -94,7 +98,9 @@ class ApiService {
    * Get all chats for a user
    */
   async getUserChats(userId) {
-    const response = await fetch(`${API_BASE_URL}/messages/chats/${userId}`);
+    const response = await fetch(`${API_BASE_URL}/messages/chats/${userId}`, {
+      headers: this.getAuthHeaders()
+    });
     
     if (!response.ok) {
       throw new Error('Failed to fetch chats');
@@ -108,7 +114,10 @@ class ApiService {
    */
   async getConversation(userId1, userId2) {
     const response = await fetch(
-      `${API_BASE_URL}/messages/conversation?userId1=${userId1}&userId2=${userId2}`
+      `${API_BASE_URL}/messages/conversation?userId1=${userId1}&userId2=${userId2}`,
+      {
+        headers: this.getAuthHeaders()
+      }
     );
     
     if (!response.ok) {
@@ -124,7 +133,7 @@ class ApiService {
   async sendMessage(senderId, receiverId, text, projectId) {
     const response = await fetch(`${API_BASE_URL}/messages/send`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: this.getAuthHeaders(),
       body: JSON.stringify({ senderId, receiverId, text, projectId })
     });
     
@@ -139,7 +148,9 @@ class ApiService {
    * Get user status
    */
   async getUserStatus(userId) {
-    const response = await fetch(`${API_BASE_URL}/messages/status/${userId}`);
+    const response = await fetch(`${API_BASE_URL}/messages/status/${userId}`, {
+      headers: this.getAuthHeaders()
+    });
     
     if (!response.ok) {
       throw new Error('Failed to fetch user status');
@@ -155,7 +166,10 @@ class ApiService {
   async markMessagesAsRead(receiverId, senderId) {
     const response = await fetch(
       `${API_BASE_URL}/messages/read?senderId=${senderId}&receiverId=${receiverId}`,
-      { method: 'PUT' }
+      { 
+        method: 'PUT',
+        headers: this.getAuthHeaders()
+      }
     );
     
     if (!response.ok) {
@@ -392,6 +406,94 @@ class ApiService {
       throw new Error(errorData.message || 'Failed to upload project files');
     }
     
+    return response.json();
+  }
+
+  /**
+   * Get all developers (for Find Developers page)
+   */
+  async getAllDevelopers() {
+    const response = await fetch(`${API_BASE_URL}/developers`, {
+      method: 'GET',
+      headers: this.getAuthHeaders()
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Failed to fetch developers');
+    }
+
+    return response.json();
+  }
+
+  /**
+   * Search developers by name, skills, or other criteria
+   */
+  async searchDevelopers(searchQuery) {
+    const params = new URLSearchParams();
+    if (searchQuery) params.append('query', searchQuery);
+
+    const response = await fetch(`${API_BASE_URL}/developers/search?${params}`, {
+      method: 'GET',
+      headers: this.getAuthHeaders()
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Failed to search developers');
+    }
+
+    return response.json();
+  }
+
+  /**
+   * Search users by role and optional query
+   * @param {string} role - 'DEVELOPER' or 'CLIENT' (optional)
+   * @param {string} query - Search query for name/email (optional)
+   * @returns {Promise<Array>} Array of users matching criteria
+   */
+  async searchUsers(role = null, query = null) {
+    const params = new URLSearchParams();
+    if (role) params.append('role', role);
+    if (query) params.append('query', query);
+
+    const url = `${API_BASE_URL}/users/search${params.toString() ? '?' + params.toString() : ''}`;
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: this.getAuthHeaders()
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Failed to search users');
+    }
+
+    return response.json();
+  }
+
+  /**
+   * Get all users by role (DEVELOPER or CLIENT)
+   * @param {string} role - 'DEVELOPER' or 'CLIENT'
+   */
+  async getUsersByRole(role) {
+    return this.searchUsers(role, null);
+  }
+
+  /**
+   * Get available projects (for developers to browse and claim)
+   */
+  async getAvailableProjects() {
+    const response = await fetch(`${API_BASE_URL}/projects/available`, {
+      method: 'GET',
+      headers: this.getAuthHeaders()
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Failed to fetch available projects');
+    }
+
     return response.json();
   }
 }
